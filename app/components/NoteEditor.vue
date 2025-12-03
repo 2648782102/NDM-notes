@@ -19,7 +19,7 @@
         <div class="note-editor-view-toggle">
           <button
             :class="{ active: viewMode === 'edit' }"
-            @click="viewMode = 'edit'"
+            @click="setViewMode('edit')"
             title="编辑模式"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -27,7 +27,7 @@
           </button>
           <button
             :class="{ active: viewMode === 'preview' }"
-            @click="viewMode = 'preview'"
+            @click="setViewMode('preview')"
             title="预览模式"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -35,7 +35,7 @@
           </button>
           <button
             :class="{ active: viewMode === 'split' }"
-            @click="viewMode = 'split'"
+            @click="setViewMode('split')"
             title="分屏模式"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
@@ -163,7 +163,9 @@
             ref="editorTextarea"
             v-model="editor.content"
             class="note-editor-textarea"
-            placeholder="在这里输入你的技术笔记、想法或 TODO...\n\n支持 Markdown 格式，使用工具栏快速插入格式！"
+            placeholder="在这里输入你的技术笔记、想法或 TODO...
+
+支持 Markdown 格式，使用工具栏快速插入格式！"
           />
         </div>
         
@@ -233,9 +235,56 @@ const emit = defineEmits<{
   'tag-remove': [tag: string]
 }>()
 
+// 从useEditor中获取viewMode
+const { viewMode } = useEditor()
+
 const tagInput = ref('')
-const viewMode = ref<'edit' | 'preview' | 'split'>('preview')
+// 使用useEditor中的viewMode，而不是组件内部的
 const editorTextarea = ref<HTMLTextAreaElement | null>(null)
+
+// 用于修改viewMode的函数
+const setViewMode = (mode: 'edit' | 'preview' | 'split') => {
+  viewMode.value = mode
+}
+
+// 解决移动端键盘遮挡问题
+onMounted(() => {
+  if (process.client) {
+    // 监听键盘显示和隐藏事件
+    window.addEventListener('resize', handleResize)
+    
+    // 监听输入框聚焦事件，滚动到可见位置
+    const titleInput = document.querySelector('.note-editor-title-input')
+    const contentTextarea = editorTextarea.value
+    const tagInputs = document.querySelectorAll('.note-editor-meta-input')
+    
+    const scrollIntoView = () => {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 100)
+    }
+    
+    titleInput?.addEventListener('focus', scrollIntoView)
+    contentTextarea?.addEventListener('focus', scrollIntoView)
+    tagInputs.forEach(input => input.addEventListener('focus', scrollIntoView))
+  }
+})
+
+onUnmounted(() => {
+  if (process.client) {
+    window.removeEventListener('resize', handleResize)
+  }
+})
+
+const handleResize = () => {
+  // 当窗口大小改变时（键盘弹出/隐藏），确保编辑器内容可见
+  if (process.client) {
+    const activeElement = document.activeElement as HTMLElement
+    if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+      activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
+}
 
 const handleAddTag = () => {
   const trimmed = tagInput.value.trim()
@@ -365,12 +414,27 @@ const insertCodeBlock = () => {
 }
 
 /* 移动端编辑器全屏布局 */
-.notes-editor-view .note-editor {
+.mobile-editor-content .note-editor {
   flex: 1 1 auto;
   border-radius: 0;
   border: none;
   min-height: calc(100vh - 5rem);
   box-shadow: none;
+  overflow: auto;
+}
+
+/* 确保编辑器内容区域在移动端正确显示 */
+.mobile-editor-content .note-editor-content-wrapper {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 移动端编辑区域自适应高度 */
+.mobile-editor-content .note-editor-content {
+  flex: 1;
+  min-height: 0;
 }
 
 .note-editor:hover {
@@ -666,6 +730,9 @@ const insertCodeBlock = () => {
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 2.5rem;
+  /* 确保触摸区域足够大 */
+  min-height: 2.5rem;
+  touch-action: manipulation;
 }
 
 .toolbar-btn:hover {
@@ -716,6 +783,8 @@ const insertCodeBlock = () => {
   border-radius: 0.5rem;
   border: 1px solid rgba(51, 65, 85, 0.6);
   transition: all 0.2s ease;
+  /* 优化滚动性能 */
+  will-change: contents;
 }
 
 .note-editor-textarea {
@@ -732,6 +801,12 @@ const insertCodeBlock = () => {
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
   transition: all 0.2s ease;
   overflow-y: auto;
+  /* 优化滚动性能 */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
+  /* 启用硬件加速 */
+  transform: translateZ(0);
 }
 
 .note-editor-textarea:focus {
@@ -750,6 +825,12 @@ const insertCodeBlock = () => {
   border-radius: 0.5rem;
   border: 1px solid rgba(51, 65, 85, 0.6);
   transition: all 0.2s ease;
+  /* 优化滚动性能 */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
+  /* 启用硬件加速 */
+  transform: translateZ(0);
 }
 
 /* 分屏模式 */
@@ -969,6 +1050,33 @@ const insertCodeBlock = () => {
   background: rgba(79, 70, 229, 0.6);
 }
 
+/* 移动端优化 */
+@media (max-width: 768px) {
+  /* 隐藏顶部的保存和删除按钮，移动端使用单独的操作栏 */
+  .note-editor-header .btn-save,
+  .note-editor-header .btn-delete {
+    display: none;
+  }
+  
+  /* 优化标题栏的标签和分类输入框 */
+  .note-editor-title-section {
+    gap: 0.75rem;
+  }
+  
+  .note-editor-meta {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+  
+  .note-editor-meta-input {
+    flex: 1;
+    min-width: 0;
+    height: 2.5rem;
+    font-size: 0.875rem;
+    padding: 0 0.875rem;
+  }
+}
+
 /* 移动端触摸反馈 */
 @media (hover: none) and (pointer: coarse) {
   /* 按钮按下效果 */
@@ -1106,28 +1214,58 @@ const insertCodeBlock = () => {
   }
   
   /* 移动端工具栏 */
-  .note-editor-toolbar {
-    padding: 0.5rem 0.75rem;
-    gap: 0.5rem;
-    background: rgba(8, 14, 30, 0.6);
-    border-bottom: 1px solid rgba(51, 65, 85, 0.4);
-    overflow-x: auto;
-    flex-wrap: nowrap;
-  }
-  
-  .toolbar-section {
-    gap: 0.25rem;
-    background: rgba(15, 23, 42, 0.6);
-    padding: 0.25rem;
-    flex-shrink: 0;
+.note-editor-toolbar {
+  padding: 0.5rem 0.75rem;
+  gap: 0.5rem;
+  background: rgba(8, 14, 30, 0.8);
+  border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  /* 优化滚动体验 */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.note-editor-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.toolbar-section {
+  gap: 0.25rem;
+  background: rgba(15, 23, 42, 0.8);
+  padding: 0.25rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+}
+
+.toolbar-btn {
+  padding: 0.3125rem 0.5rem;
+  font-size: 0.7rem;
+  min-width: 2rem;
+  gap: 0.25rem;
+  border-radius: 0.375rem;
+}
+
+/* 工具栏提示文字优化 */
+@media (max-width: 768px) {
+  .toolbar-btn span {
+    display: none;
   }
   
   .toolbar-btn {
-    padding: 0.3125rem 0.4375rem;
-    font-size: 0.7rem;
-    min-width: auto;
-    gap: 0.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0.5rem;
   }
+  
+  .toolbar-section {
+    gap: 0.375rem;
+  }
+}
   
   /* 移动端内容区域 */
   .note-editor-content-wrapper {

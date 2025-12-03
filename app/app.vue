@@ -215,6 +215,9 @@ body {
   inset: 0;
   opacity: 0.6;
   animation: float 20s ease-in-out infinite;
+  /* 提升动画性能 */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .app-bg-1 {
@@ -253,13 +256,13 @@ body {
 
 @keyframes float {
   0%, 100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   }
   33% {
-    transform: translate(2%, 2%) scale(1.05);
+    transform: translate3d(2%, 2%, 0) scale3d(1.05, 1.05, 1);
   }
   66% {
-    transform: translate(-2%, -2%) scale(0.95);
+    transform: translate3d(-2%, -2%, 0) scale3d(0.95, 0.95, 1);
   }
 }
 
@@ -324,6 +327,9 @@ body {
   z-index: 200;
   overflow-y: auto;
   box-shadow: var(--shadow-xl);
+  /* 优化移动端体验 */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app-sidebar-open {
@@ -419,8 +425,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-full);
   background: var(--bg-card);
@@ -428,6 +434,10 @@ body {
   cursor: pointer;
   transition: var(--transition);
   backdrop-filter: blur(12px);
+  /* 确保触摸区域足够大 */
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  touch-action: manipulation;
 }
 
 .theme-toggle:hover {
@@ -679,6 +689,36 @@ body {
   .app-main {
     padding: 1rem 0;
     gap: 0.75rem;
+  }
+}
+
+/* 移动端菜单优化 */
+@media (max-width: 768px) {
+  .app-sidebar {
+    /* 移动端菜单覆盖整个屏幕 */
+    width: 85%;
+    max-width: 280px;
+    /* 优化动画效果 */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-100%);
+  }
+  
+  .app-sidebar-open {
+    left: 0;
+    transform: translateX(0);
+  }
+  
+  .app-main-expanded {
+    margin-left: 0;
+    /* 添加半透明遮罩 */
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+  }
+  
+  /* 优化悬浮菜单按钮 */
+  .floating-menu-btn-open {
+    left: calc(85% + 10px);
+    max-left: 290px;
   }
 }
 

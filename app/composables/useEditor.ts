@@ -10,6 +10,7 @@ export function useEditor() {
 
   const currentNoteId = ref<string | null>(null)
   const saving = ref(false)
+  const viewMode = ref<'edit' | 'preview' | 'split'>('preview')
 
   const syncFromNote = (note: Note | null) => {
     if (!note) {
@@ -53,6 +54,7 @@ export function useEditor() {
     editor,
     currentNoteId,
     saving,
+    viewMode,
     syncFromNote,
     reset,
     addTag,

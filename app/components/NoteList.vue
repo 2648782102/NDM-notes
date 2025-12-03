@@ -181,6 +181,11 @@ const formatTime = (iso: string) => {
   background: transparent;
 }
 
+/* 移动端隐藏NoteList中的新建按钮，避免冗余 */
+.notes-mobile-layout .note-list-header .btn-new-note {
+  display: none;
+}
+
 /* 笔记列表面板容器 */
 .note-list-panel {
   flex: 1;
@@ -194,6 +199,12 @@ const formatTime = (iso: string) => {
   flex: 1;
   overflow-y: auto;
   min-height: 0;
+  /* 优化滚动性能 */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
+  /* 启用硬件加速 */
+  transform: translateZ(0);
 }
 
 /* 响应式设计 */
@@ -472,6 +483,9 @@ const formatTime = (iso: string) => {
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  /* 确保触摸区域足够大 */
+  min-height: 2rem;
+  touch-action: manipulation;
 }
 
 .category-tag:hover {
