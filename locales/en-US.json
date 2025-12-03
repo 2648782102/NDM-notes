@@ -1,0 +1,61 @@
+{
+  "app": {
+    "name": "NDM Notes",
+    "subtitle": "Modern Animated Notes App · Nuxt Full-Stack Example",
+    "description": "Modern animated notes app, built with Nuxt full-stack"
+  },
+  "header": {
+    "login": "Login",
+    "logout": "Logout",
+    "online": "Online"
+  },
+  "notes": {
+    "title": "Note Categories",
+    "collections": "Collections",
+    "newNote": "New Note",
+    "all": "All",
+    "noNotes": "No notes yet. Click 'New Note' to start writing!",
+    "clickToView": "Click to view details",
+    "loading": "Loading...",
+    "save": "Save Changes",
+    "create": "Create Note",
+    "delete": "Delete",
+    "category": "Category",
+    "tags": "Press Enter to add tag",
+    "titlePlaceholder": "Enter title...",
+    "contentPlaceholder": "Write your technical notes, ideas, or TODOs here...\n\nMarkdown supported:\n- # Headings\n- **Bold**\n- *Italic*\n- `Code`\n- [Links](https://example.com)"
+  },
+  "editor": {
+    "edit": "Edit",
+    "preview": "Preview",
+    "split": "Split"
+  },
+  "footer": {
+    "copyright": "© {year} {name}. Built with Nuxt 4.",
+    "about": "About",
+    "docs": "Documentation",
+    "github": "GitHub"
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Welcome back to NDM Notes",
+    "username": "Username",
+    "password": "Password",
+    "loginButton": "Login",
+    "registerButton": "Register",
+    "demoAccount": "Demo account: username demo / password demo123",
+    "error": "Invalid username or password",
+    "success": "Login successful",
+    "register": {
+      "title": "Register",
+      "subtitle": "Create a new account",
+      "confirmPassword": "Confirm Password",
+      "registerButton": "Register",
+      "loginButton": "Already have an account? Login",
+      "error": "Registration failed",
+      "success": "Registration successful",
+      "passwordMismatch": "Passwords do not match",
+      "usernameExists": "Username already exists"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "app": {
+    "name": "NDM Notes",
+    "subtitle": "现代动画笔记应用 · Nuxt 全栈示例",
+    "description": "现代化动画笔记应用，基于 Nuxt 全栈实现"
+  },
+  "header": {
+    "login": "登录",
+    "logout": "退出",
+    "online": "已登录"
+  },
+  "notes": {
+    "title": "笔记分类",
+    "collections": "Collections",
+    "newNote": "新建笔记",
+    "all": "全部",
+    "noNotes": "暂无笔记，点击右上角「新建笔记」开始记录吧～",
+    "clickToView": "点击查看详情",
+    "loading": "加载中...",
+    "save": "保存修改",
+    "create": "创建笔记",
+    "delete": "删除",
+    "category": "分类",
+    "tags": "回车添加标签",
+    "titlePlaceholder": "输入标题...",
+    "contentPlaceholder": "在这里输入你的技术笔记、想法或 TODO...\n\n支持 Markdown 格式：\n- # 标题\n- **加粗**\n- *斜体*\n- `代码`\n- [链接](https://example.com)"
+  },
+  "editor": {
+    "edit": "编辑",
+    "preview": "预览",
+    "split": "分屏"
+  },
+  "footer": {
+    "copyright": "© {year} {name}. 基于 Nuxt 4 构建。",
+    "about": "关于",
+    "docs": "文档",
+    "github": "GitHub"
+  },
+  "login": {
+    "title": "登录",
+    "subtitle": "欢迎回到 NDM Notes",
+    "username": "用户名",
+    "password": "密码",
+    "loginButton": "登录",
+    "registerButton": "注册",
+    "demoAccount": "演示账号：用户名 demo / 密码 demo123",
+    "error": "用户名或密码错误",
+    "success": "登录成功",
+    "register": {
+      "title": "注册",
+      "subtitle": "创建新账号",
+      "confirmPassword": "确认密码",
+      "registerButton": "注册",
+      "loginButton": "已有账号？登录",
+      "error": "注册失败",
+      "success": "注册成功",
+      "passwordMismatch": "两次输入的密码不一致",
+      "usernameExists": "用户名已被占用"
+    }
+  }
+}
