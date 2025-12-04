@@ -1,16 +1,18 @@
 {
   "version": 2,
-  "framework": "nuxt",
   "builds": [
     {
-      "src": "./nuxt.config.ts",
-      "use": "@vercel/nuxt@latest"
+      "src": "nuxt.config.ts",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": ".output/public/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
     }
   ],
   "env": {
