@@ -47,7 +47,7 @@ function readDataFile<T>(filePath: string, defaultValue: T): T {
 }
 
 // 保存数据文件
-function saveDataFile(filePath: string, data: any) {
+function saveDataFile<T>(filePath: string, data: T) {
   ensureDataDir()
   writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
 }

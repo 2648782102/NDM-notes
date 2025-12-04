@@ -41,12 +41,18 @@ export function useAuth() {
   }
 
   const logout = async () => {
-    await $fetch('/api/auth/logout', {
-      method: 'POST',
-      credentials: 'include'
-    })
-    user.value = null
-    status.value = 'idle'
+    try {
+      await $fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      })
+    } catch (error) {
+      // 忽略退出登录错误，因为即使失败也应该重置状态
+      console.error('Logout failed:', error)
+    } finally {
+      user.value = null
+      status.value = 'idle'
+    }
   }
 
   // 应用加载时自动获取当前用户（仅在客户端且状态为 idle 时）

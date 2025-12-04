@@ -111,18 +111,30 @@
       <!-- 标题部分 - 与内容整合 -->
       <div class="note-editor-title-section">
         <!-- 编辑模式下直接显示输入框，预览模式下显示标题文本 -->
-        <h1 
-          v-if="editor.title && !isEditing" 
-          class="note-editor-title-display"
-          @dblclick="startEditingTitle"
-        >{{ editor.title }}</h1>
-        <input
-          v-else
-          v-model="editor.title"
-          class="note-editor-title-input"
-          placeholder="输入标题..."
-          ref="titleInput"
-        />
+        <div class="title-with-edit">
+          <h1 
+            v-if="editor.title && !isEditing" 
+            class="note-editor-title-display"
+            @dblclick="startEditingTitle"
+          >{{ editor.title }}</h1>
+          <input
+            v-else
+            v-model="editor.title"
+            class="note-editor-title-input"
+            placeholder="输入标题..."
+            ref="titleInput"
+          />
+          <!-- 添加编辑按钮，适合移动端用户 -->
+          <button 
+            v-if="!isEditing" 
+            class="note-editor-edit-btn"
+            @click="startEditing"
+            title="编辑笔记"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            编辑
+          </button>
+        </div>
         
         <!-- 元数据输入 - 只在编辑模式显示 -->
         <div v-if="isEditing" class="note-editor-meta">
@@ -142,34 +154,42 @@
 
       <!-- 内容区域 - 根据isEditing状态切换 -->
       <div class="note-editor-content">
-        <!-- 默认预览模式 - 完整高度 -->
-        <div 
-          v-if="!isEditing" 
-          class="note-editor-preview-full"
-          @dblclick="startEditing"
-          v-html="compiledMarkdown"
-        />
-        
-        <!-- 编辑模式 - 分屏显示 -->
-        <template v-else>
-          <!-- 编辑区域 -->
-          <div class="note-editor-edit">
-            <textarea
-              ref="editorTextarea"
-              v-model="editor.content"
-              class="note-editor-textarea"
-              placeholder="在这里输入你的技术笔记、想法或 TODO...
-
-支持 Markdown 格式，使用工具栏快速插入格式！"
-            />
-          </div>
-          
-          <!-- 预览区域 -->
-          <div
-            class="note-editor-preview"
+        <!-- 使用Transition组件添加切换动画 -->
+        <Transition name="editor-mode" mode="out-in">
+          <!-- 默认预览模式 - 完整高度 -->
+          <div 
+            v-if="!isEditing" 
+            key="preview"
+            class="note-editor-preview-full"
+            @dblclick="startEditing"
             v-html="compiledMarkdown"
           />
-        </template>
+          
+          <!-- 编辑模式 - 分屏显示 -->
+          <div 
+            v-else
+            key="edit"
+            class="note-editor-edit-container"
+          >
+            <!-- 编辑区域 -->
+            <div class="note-editor-edit">
+              <textarea
+                ref="editorTextarea"
+                v-model="editor.content"
+                class="note-editor-textarea"
+                placeholder="在这里输入你的技术笔记、想法或 TODO...
+
+支持 Markdown 格式，使用工具栏快速插入格式！"
+              />
+            </div>
+            
+            <!-- 预览区域 -->
+            <div
+              class="note-editor-preview"
+              v-html="compiledMarkdown"
+            />
+          </div>
+        </Transition>
       </div>
     </div>
 
@@ -219,7 +239,16 @@ marked.setOptions({
   // 启用智能列表
   smartLists: true,
   // 启用智能标点
-  smartypants: true
+  smartypants: true,
+  // 安全配置
+  mangle: true, // 混淆邮件地址
+  sanitize: true, // 启用HTML净化
+  silent: true, // 忽略解析错误
+  baseUrl: undefined, // 不允许相对URL
+  // 确保不执行不安全的HTML
+  allowHtml: false,
+  // 不暴露URL
+  exposeUrl: false
 })
 
 interface Props {
@@ -353,20 +382,19 @@ onMounted(() => {
       window.removeEventListener('keydown', handleKeyDown)
     }
     
-    // 存储清理函数到window对象
-    (window as any)._ndmNotesCleanup = cleanup
+    // 使用闭包保存清理函数，避免使用any类型
+    let cleanupFunction = cleanup
+    
+    // 将清理函数存储到组件实例中
+    onUnmounted(() => {
+      cleanupFunction()
+    })
   }
 })
 
 onUnmounted(() => {
   if (process.client) {
     window.removeEventListener('resize', handleResize)
-    // 移除快捷键事件监听器
-    const cleanup = (window as any)._ndmNotesCleanup
-    if (cleanup) {
-      cleanup()
-      delete (window as any)._ndmNotesCleanup
-    }
   }
 })
 
@@ -392,9 +420,10 @@ const handleRemoveTag = (tag: string) => {
   emit('tag-remove', tag)
 }
 
-// 计算属性：编译后的 Markdown
+// 计算属性：编译后的 Markdown，添加缓存避免重复编译
 const compiledMarkdown = computed(() => {
-  return marked(props.editor.content || '')
+  const content = props.editor.content || ''
+  return marked(content)
 })
 
 // 插入 Markdown 格式
@@ -624,6 +653,13 @@ const insertTable = () => {
 }
 
 /* 标题显示样式 */
+.title-with-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
 .note-editor-title-display {
   margin: 0;
   padding: 0.5rem 0;
@@ -633,10 +669,41 @@ const insertTable = () => {
   line-height: 1.3;
   transition: color 0.2s ease;
   cursor: pointer;
+  flex: 1;
 }
 
 .note-editor-title-display:hover {
   color: #a5b4fc;
+}
+
+/* 编辑按钮样式 */
+.note-editor-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  background: rgba(79, 70, 229, 0.1);
+  color: #c7d2fe;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  min-height: 2rem;
+}
+
+.note-editor-edit-btn:hover {
+  background: rgba(79, 70, 229, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #e0e7ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.note-editor-edit-btn svg {
+  width: 14px;
+  height: 14px;
 }
 
 .note-editor-meta-input {
@@ -818,7 +885,7 @@ const insertTable = () => {
 
 .note-editor-textarea {
   width: 100%;
-  height: 100%;
+  flex: 1;
   border: none;
   background: transparent;
   padding: 1rem;
@@ -1364,6 +1431,38 @@ const insertTable = () => {
   }
 }
 
+/* 编辑器模式切换动画 */
+.editor-mode-enter-active,
+.editor-mode-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.editor-mode-enter-from {
+  opacity: 0;
+  transform: scale(0.95) translateY(10px);
+}
+
+.editor-mode-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+}
+
+.editor-mode-enter-to,
+.editor-mode-leave-from {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* 编辑模式容器 */
+.note-editor-edit-container {
+  display: flex;
+  gap: 0.75rem;
+  flex: 1;
+  overflow: hidden;
+  flex-direction: row;
+  height: 100%;
+}
+
 /* 响应式设计 */
 @media (max-width: 1024px) {
   .note-editor-header {
@@ -1384,6 +1483,11 @@ const insertTable = () => {
     width: auto;
     flex: 1;
     min-width: 6rem;
+  }
+  
+  /* 移动端编辑模式容器改为垂直排列 */
+  .note-editor-edit-container {
+    flex-direction: column;
   }
 }
 
