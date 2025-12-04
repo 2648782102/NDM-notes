@@ -5,6 +5,24 @@ export default defineNuxtConfig({
     enabled: false // 生产环境禁用 devtools
   },
 
+  // Nitro 配置，解决 Vercel 部署问题
+  nitro: {
+    // 设置数据目录为 /tmp，这是 Vercel 上唯一可写的目录
+    dataDir: '/tmp/.nuxt/data',
+    // 使用内存存储作为默认存储
+    storage: {
+      default: {
+        driver: 'memory'
+      }
+    },
+    // 确保在 Vercel 上使用正确的预设
+    preset: 'vercel',
+    // 禁用文件系统缓存
+    cache: {
+      storage: 'memory'
+    }
+  },
+
   app: {
     head: {
       title: 'NDM Notes',
