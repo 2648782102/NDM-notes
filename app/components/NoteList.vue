@@ -155,11 +155,11 @@ const formatTime = (iso: string) => {
 .note-list-container {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0;
   flex: 0 0 360px;
-  background: rgba(15, 23, 42, 0.72);
+  background: var(--bg-card);
   border-radius: 1rem;
-  border: 1px solid rgba(51, 65, 85, 0.85);
+  border: 1px solid var(--border-color);
   backdrop-filter: blur(24px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
@@ -376,7 +376,7 @@ const formatTime = (iso: string) => {
   justify-content: space-between;
   padding: 1rem 1.25rem;
   gap: 0.75rem;
-  background: rgba(8, 14, 30, 0.4);
+  background: var(--bg-secondary);
 }
 
 .note-list-title {
@@ -390,23 +390,23 @@ const formatTime = (iso: string) => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #94a3b8;
+  color: var(--text-muted);
   transition: color 0.2s ease;
 }
 
 .note-list-container:hover .note-list-label {
-  color: #a5b4fc;
+  color: var(--accent-secondary);
 }
 
 .note-list-heading {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: var(--text-primary);
   transition: color 0.2s ease;
 }
 
 .note-list-container:hover .note-list-heading {
-  color: #c7d2fe;
+  color: var(--accent-tertiary);
 }
 
 /* 新建笔记按钮 */
@@ -455,8 +455,8 @@ const formatTime = (iso: string) => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1rem;
-  border-bottom: 1px solid rgba(51, 65, 85, 0.8);
-  background: rgba(8, 14, 30, 0.2);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -477,12 +477,12 @@ const formatTime = (iso: string) => {
   align-items: center;
   gap: 0.375rem;
   border-radius: 9999px;
-  background-color: rgba(30, 41, 59, 0.8);
+  background-color: var(--bg-card);
   padding: 0.375rem 0.875rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #e5e7eb;
-  border: 1px solid rgba(79, 70, 229, 0.2);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -492,15 +492,16 @@ const formatTime = (iso: string) => {
 }
 
 .category-tag:hover {
-  background-color: rgba(79, 70, 229, 0.2);
-  border-color: rgba(99, 102, 241, 0.4);
+  background-color: var(--bg-hover);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
   transform: translateY(-1px);
 }
 
 .category-tag-active {
-  background-color: rgba(99, 102, 241, 0.3);
-  color: #c7d2fe;
-  border-color: rgba(99, 102, 241, 0.5);
+  background-color: var(--bg-hover);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
@@ -520,7 +521,7 @@ const formatTime = (iso: string) => {
   flex: 1;
   overflow-y: auto;
   padding: 0.75rem;
-  background: rgba(8, 14, 30, 0.2);
+  background: var(--bg-secondary);
   min-height: 0;
 }
 
@@ -585,8 +586,8 @@ const formatTime = (iso: string) => {
   padding: 0.875rem 1rem;
   text-align: left;
   border-radius: 0.75rem;
-  background: transparent;
-  border: 1px solid transparent;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
@@ -608,16 +609,16 @@ const formatTime = (iso: string) => {
 }
 
 .note-item:hover {
-  background-color: rgba(30, 41, 59, 0.8);
-  border-color: rgba(79, 70, 229, 0.3);
+  background-color: var(--bg-hover);
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 .note-item-active {
-  background-color: rgba(30, 41, 59, 0.8);
-  border-color: rgba(99, 102, 241, 0.7);
-  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.7), 0 4px 12px rgba(99, 102, 241, 0.2);
+  background-color: var(--bg-hover);
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-accent);
 }
 
 /* 悬停效果 */
@@ -651,7 +652,7 @@ const formatTime = (iso: string) => {
 .note-item-title {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #f1f5f9;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -660,23 +661,23 @@ const formatTime = (iso: string) => {
 
 .note-item:hover .note-item-title,
 .note-item-active .note-item-title {
-  color: #c7d2fe;
+  color: var(--accent-primary);
 }
 
 .note-item-time {
   font-size: 0.6875rem;
-  color: #64748b;
+  color: var(--text-muted);
   white-space: nowrap;
   transition: color 0.2s ease;
 }
 
 .note-item:hover .note-item-time {
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 .note-item-preview {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -687,7 +688,7 @@ const formatTime = (iso: string) => {
 }
 
 .note-item:hover .note-item-preview {
-  color: #cbd5e1;
+  color: var(--text-secondary);
 }
 
 .note-item-tags {
@@ -709,29 +710,31 @@ const formatTime = (iso: string) => {
   align-items: center;
   gap: 0.375rem;
   border-radius: 9999px;
-  background-color: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(79, 70, 229, 0.2);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   padding: 0.25rem 0.75rem;
   font-size: 0.6875rem;
   font-weight: 500;
-  color: #e5e7eb;
+  color: var(--text-secondary);
   transition: all 0.2s ease;
 }
 
 .note-tag:hover {
-  background-color: rgba(79, 70, 229, 0.2);
-  border-color: rgba(99, 102, 241, 0.4);
+  background-color: var(--bg-hover);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 .note-tag-category {
   background-color: rgba(16, 185, 129, 0.15);
   border-color: rgba(16, 185, 129, 0.3);
-  color: #86efac;
+  color: var(--success-color);
 }
 
 .note-tag-category:hover {
   background-color: rgba(16, 185, 129, 0.25);
-  border-color: rgba(16, 185, 129, 0.5);
+  border-color: var(--success-color);
+  color: var(--success-color);
 }
 
 /* 笔记项操作提示 */

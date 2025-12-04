@@ -101,9 +101,7 @@ const updateTheme = () => {
   if (process.client) {
     if (currentTheme.value === 'dark') {
       document.documentElement.classList.add('dark')
-      document.documentElement.classList.remove('light')
     } else {
-      document.documentElement.classList.add('light')
       document.documentElement.classList.remove('dark')
     }
   }
@@ -141,59 +139,85 @@ body {
   padding: 0;
 }
 
-/* 主题变量 */
+/* 主题变量 - 采用CSS变量管理，支持亮色/暗色主题切换 */
 :root {
-  /* 暗色主题 */
-  --bg-primary: #020617;
-  --bg-secondary: #0f172a;
-  --bg-tertiary: #1e293b;
-  --bg-card: rgba(15, 23, 42, 0.72);
-  --bg-hover: rgba(30, 41, 59, 0.8);
-  --border-color: rgba(51, 65, 85, 0.85);
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
+  /* ========== 亮色主题（默认） ========== */
+  /* 背景色 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-hover: rgba(241, 245, 249, 0.9);
+  
+  /* 边框色 */
+  --border-color: rgba(226, 232, 240, 0.85);
+  
+  /* 文本色 */
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  
+  /* 强调色 */
   --accent-primary: #6366f1;
   --accent-secondary: #818cf8;
   --accent-tertiary: #a5b4fc;
+  
+  /* 功能色 */
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --error-color: #ef4444;
+  
+  /* 阴影 */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --shadow-accent: 0 0 0 1px rgba(99, 102, 241, 0.7), 0 4px 12px rgba(99, 102, 241, 0.2);
+  
+  /* 圆角 */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-full: 9999px;
+  
+  /* 过渡动画 */
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 亮色主题（预留） */
-:root.light {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f1f5f9;
-  --bg-card: rgba(255, 255, 255, 0.8);
-  --bg-hover: rgba(241, 245, 249, 0.8);
-  --border-color: rgba(226, 232, 240, 0.85);
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
+/* ========== 暗色主题 ========== */
+:root.dark {
+  /* 背景色 */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-card: rgba(15, 23, 42, 0.95);
+  --bg-hover: rgba(30, 41, 59, 0.9);
+  
+  /* 边框色 */
+  --border-color: rgba(71, 85, 105, 0.85);
+  
+  /* 文本色 */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
-  --accent-primary: #6366f1;
-  --accent-secondary: #818cf8;
-  --accent-tertiary: #a5b4fc;
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-accent: 0 0 0 1px rgba(99, 102, 241, 0.7), 0 4px 12px rgba(99, 102, 241, 0.2);
+  
+  /* 强调色 */
+  --accent-primary: #818cf8;
+  --accent-secondary: #a5b4fc;
+  --accent-tertiary: #c7d2fe;
+  
+  /* 功能色 */
+  --success-color: #34d399;
+  --warning-color: #fbbf24;
+  --error-color: #f87171;
+  
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  --shadow-accent: 0 0 0 1px rgba(129, 140, 248, 0.7), 0 4px 12px rgba(129, 140, 248, 0.4);
 }
 
 /* 基础样式 */
@@ -210,10 +234,10 @@ body {
 .app-root {
   min-height: 100vh;
   background: 
-    radial-gradient(circle at top left, rgba(79, 70, 229, 0.22), transparent 55%),
-    radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.16), transparent 55%),
-    radial-gradient(circle at center, rgba(168, 85, 247, 0.1), transparent 50%),
-    linear-gradient(135deg, var(--bg-primary), var(--bg-primary) 40%, var(--bg-primary));
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.06), transparent 55%),
+    radial-gradient(circle at center, rgba(168, 85, 247, 0.04), transparent 50%),
+    var(--bg-primary);
   color: var(--text-primary);
   position: relative;
   overflow: hidden;
@@ -332,7 +356,7 @@ body {
   left: -280px;
   width: 280px;
   height: 100vh;
-  background: rgba(2, 6, 23, 0.95);
+  background: var(--bg-card);
   backdrop-filter: blur(32px);
   border-right: 1px solid var(--border-color);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

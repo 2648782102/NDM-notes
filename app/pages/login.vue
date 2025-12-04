@@ -115,15 +115,15 @@ onMounted(() => {
   justify-content: center;
   padding: 1rem;
   background: 
-    radial-gradient(circle at top left, rgba(79, 70, 229, 0.22), transparent 55%),
-    radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.16), transparent 55%),
-    radial-gradient(circle at center, rgba(168, 85, 247, 0.1), transparent 50%),
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.06), transparent 55%),
+    radial-gradient(circle at center, rgba(168, 85, 247, 0.04), transparent 50%),
     var(--bg-primary);
 }
 
 .login-container {
-  background: rgba(15, 23, 42, 0.72);
-  border: 1px solid rgba(51, 65, 85, 0.85);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   backdrop-filter: blur(24px);
   box-shadow: var(--shadow-lg), 0 10px 25px rgba(0, 0, 0, 0.1);

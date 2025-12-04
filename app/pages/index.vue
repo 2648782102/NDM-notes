@@ -295,8 +295,8 @@ onMounted(async () => {
   flex: 1;
   height: 100%;
   border-radius: 1rem;
-  background-color: rgba(15, 23, 42, 0.72);
-  border: 1px solid rgba(51, 65, 85, 0.85);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   backdrop-filter: blur(24px);
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

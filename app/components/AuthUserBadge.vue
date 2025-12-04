@@ -130,8 +130,8 @@ const onLogout = async () => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(79, 70, 229, 0.3);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 1rem;
   padding: 0.5rem 0.75rem;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -139,10 +139,10 @@ const onLogout = async () => {
 }
 
 .auth-badge-user:hover {
-  background: rgba(30, 41, 59, 0.9);
-  border-color: rgba(99, 102, 241, 0.5);
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 /* 过渡动画 */

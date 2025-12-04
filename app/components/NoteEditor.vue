@@ -639,17 +639,17 @@ const insertTable = () => {
   padding: 0.5rem 0;
   font-size: 1.125rem;
   font-weight: 600;
-  color: #f9fafb;
+  color: var(--text-primary);
   outline: none;
   transition: color 0.2s ease;
 }
 
 .note-editor-title-input:focus {
-  color: #c7d2fe;
+  color: var(--accent-tertiary);
 }
 
 .note-editor-title-input::placeholder {
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 /* 标题显示样式 */
@@ -665,7 +665,7 @@ const insertTable = () => {
   padding: 0.5rem 0;
   font-size: 1.125rem;
   font-weight: 600;
-  color: #c7d2fe;
+  color: var(--accent-tertiary);
   line-height: 1.3;
   transition: color 0.2s ease;
   cursor: pointer;
@@ -673,7 +673,7 @@ const insertTable = () => {
 }
 
 .note-editor-title-display:hover {
-  color: #a5b4fc;
+  color: var(--accent-secondary);
 }
 
 /* 编辑按钮样式 */
@@ -684,7 +684,7 @@ const insertTable = () => {
   padding: 0.5rem 1rem;
   border: 1px solid rgba(79, 70, 229, 0.3);
   background: rgba(79, 70, 229, 0.1);
-  color: #c7d2fe;
+  color: var(--accent-tertiary);
   border-radius: 0.5rem;
   font-size: 0.875rem;
   cursor: pointer;
@@ -695,10 +695,10 @@ const insertTable = () => {
 
 .note-editor-edit-btn:hover {
   background: rgba(79, 70, 229, 0.2);
-  border-color: rgba(99, 102, 241, 0.5);
-  color: #e0e7ff;
+  border-color: var(--accent-primary);
+  color: var(--accent-tertiary);
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .note-editor-edit-btn svg {
@@ -709,24 +709,24 @@ const insertTable = () => {
 .note-editor-meta-input {
   width: 7rem;
   height: 2rem;
-  border: 1px solid rgba(79, 70, 229, 0.3);
-  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
   padding: 0 0.75rem;
   font-size: 0.75rem;
   border-radius: 0.5rem;
-  color: #e2e8f0;
+  color: var(--text-primary);
   outline: none;
   transition: all 0.2s ease;
 }
 
 .note-editor-meta-input:focus {
-  border-color: #6366f1;
-  background-color: rgba(15, 23, 42, 0.8);
+  border-color: var(--accent-primary);
+  background-color: var(--bg-hover);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .note-editor-meta-input::placeholder {
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 /* 元数据输入区域优化 */
@@ -741,13 +741,13 @@ const insertTable = () => {
 .toolbar-btn.btn-save {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.3));
   border-color: rgba(99, 102, 241, 0.5);
-  color: #c7d2fe;
+  color: var(--accent-tertiary);
 }
 
 .toolbar-btn.btn-save:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(129, 140, 248, 0.3), rgba(99, 102, 241, 0.4));
   border-color: rgba(129, 140, 248, 0.6);
-  color: #e0e7ff;
+  color: var(--accent-tertiary);
 }
 
 .toolbar-btn.btn-save:disabled {
@@ -759,13 +759,13 @@ const insertTable = () => {
 .toolbar-btn.btn-delete {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
   border-color: rgba(239, 68, 68, 0.4);
-  color: #fecaca;
+  color: var(--error-color);
 }
 
 .toolbar-btn.btn-delete:hover {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.3));
   border-color: rgba(239, 68, 68, 0.6);
-  color: #fecdd3;
+  color: var(--error-color);
 }
 
 /* 小加载动画 */
@@ -774,7 +774,7 @@ const insertTable = () => {
   width: 0.625rem;
   height: 0.625rem;
   border: 2px solid rgba(199, 210, 254, 0.3);
-  border-top-color: #c7d2fe;
+  border-top-color: var(--accent-tertiary);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
   margin-right: 0.25rem;
@@ -786,8 +786,8 @@ const insertTable = () => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1.25rem;
-  border-bottom: 1px solid rgba(51, 65, 85, 0.6);
-  background: rgba(8, 14, 30, 0.3);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
   flex-wrap: wrap;
   justify-content: flex-start;
   overflow-x: auto;
@@ -819,9 +819,9 @@ const insertTable = () => {
   justify-content: center;
   gap: 0.375rem;
   padding: 0.375rem 0.5rem;
-  border: 1px solid rgba(79, 70, 229, 0.3);
-  background: transparent;
-  color: #cbd5e1;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-secondary);
   border-radius: 0.375rem;
   font-size: 0.75rem;
   cursor: pointer;
@@ -833,11 +833,11 @@ const insertTable = () => {
 }
 
 .toolbar-btn:hover {
-  background: rgba(79, 70, 229, 0.2);
-  border-color: rgba(99, 102, 241, 0.5);
-  color: #c7d2fe;
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+  color: var(--accent-tertiary);
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 /* 内容编辑区域包装器 */
@@ -846,7 +846,7 @@ const insertTable = () => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: rgba(8, 14, 30, 0.4);
+  background: var(--bg-secondary);
   padding: 1rem;
   gap: 1rem;
 }
@@ -857,9 +857,9 @@ const insertTable = () => {
   flex-direction: column;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--bg-card);
   border-radius: 0.5rem;
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  border: 1px solid var(--border-color);
   transition: all 0.2s ease;
 }
 
@@ -877,9 +877,9 @@ const insertTable = () => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--bg-card);
   border-radius: 0.5rem;
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  border: 1px solid var(--border-color);
   transition: all 0.2s ease;
 }
 
@@ -891,7 +891,7 @@ const insertTable = () => {
   padding: 1rem;
   font-size: 0.875rem;
   line-height: 1.7;
-  color: #f1f5f9;
+  color: var(--text-primary);
   resize: none;
   outline: none;
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
@@ -906,7 +906,7 @@ const insertTable = () => {
 }
 
 .note-editor-textarea:focus {
-  color: #c7d2fe;
+  color: var(--text-primary);
 }
 
 /* 预览模式 - 完整高度 */
@@ -916,10 +916,10 @@ const insertTable = () => {
   padding: 1rem;
   font-size: 0.875rem;
   line-height: 1.7;
-  color: #f1f5f9;
-  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-primary);
+  background: var(--bg-card);
   border-radius: 0.5rem;
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  border: 1px solid var(--border-color);
   transition: all 0.2s ease;
   /* 优化滚动性能 */
   -webkit-overflow-scrolling: touch;
@@ -936,10 +936,10 @@ const insertTable = () => {
   padding: 1rem;
   font-size: 0.875rem;
   line-height: 1.7;
-  color: #f1f5f9;
-  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-primary);
+  background: var(--bg-card);
   border-radius: 0.5rem;
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  border: 1px solid var(--border-color);
   transition: all 0.2s ease;
   /* 优化滚动性能 */
   -webkit-overflow-scrolling: touch;
@@ -965,7 +965,7 @@ const insertTable = () => {
   margin: 1.5rem 0 0.75rem;
   font-weight: 600;
   line-height: 1.25;
-  color: #c7d2fe;
+  color: var(--text-primary);
 }
 
 .note-editor-preview-full :deep(h1),
@@ -990,7 +990,7 @@ const insertTable = () => {
 .note-editor-preview-full :deep(p),
 .note-editor-preview :deep(p) {
   margin: 0.75rem 0;
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .note-editor-preview-full :deep(ul),
@@ -999,7 +999,7 @@ const insertTable = () => {
 .note-editor-preview :deep(ol) {
   margin: 0.75rem 0;
   padding-left: 1.5rem;
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .note-editor-preview-full :deep(li),
@@ -1021,45 +1021,45 @@ const insertTable = () => {
 .note-editor-preview-full :deep(li input[type="checkbox"]),
 .note-editor-preview :deep(li input[type="checkbox"]) {
   margin-right: 0.5rem;
-  accent-color: #6366f1;
+  accent-color: var(--accent-primary);
 }
 
 .note-editor-preview-full :deep(li input[type="checkbox"]:checked + span),
 .note-editor-preview :deep(li input[type="checkbox"]:checked + span) {
   text-decoration: line-through;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .note-editor-preview-full :deep(a),
 .note-editor-preview :deep(a) {
-  color: #60a5fa;
+  color: var(--accent-primary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .note-editor-preview-full :deep(a:hover),
 .note-editor-preview :deep(a:hover) {
-  color: #3b82f6;
+  color: var(--accent-secondary);
   text-decoration: underline;
 }
 
 .note-editor-preview-full :deep(strong),
 .note-editor-preview :deep(strong) {
   font-weight: 600;
-  color: #c7d2fe;
+  color: var(--accent-tertiary);
 }
 
 .note-editor-preview-full :deep(em),
 .note-editor-preview :deep(em) {
   font-style: italic;
-  color: #fcd34d;
+  color: var(--warning-color);
 }
 
 /* 高亮文本样式 */
 .note-editor-preview-full :deep(mark),
 .note-editor-preview :deep(mark) {
   background-color: rgba(251, 191, 36, 0.2);
-  color: #fde047;
+  color: var(--warning-color);
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
 }
@@ -1069,18 +1069,18 @@ const insertTable = () => {
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
   font-size: 0.875em;
   padding: 0.125rem 0.375rem;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(51, 65, 85, 0.8);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   border-radius: 0.375rem;
-  color: #f87171;
+  color: var(--text-primary);
 }
 
 .note-editor-preview-full :deep(pre),
 .note-editor-preview :deep(pre) {
   margin: 1rem 0;
   padding: 1rem;
-  background: rgba(8, 14, 30, 0.8);
-  border: 1px solid rgba(51, 65, 85, 0.8);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   overflow-x: auto;
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
@@ -1091,15 +1091,15 @@ const insertTable = () => {
   background: transparent;
   border: none;
   padding: 0;
-  color: inherit;
+  color: var(--text-primary);
 }
 
 .note-editor-preview-full :deep(blockquote),
 .note-editor-preview :deep(blockquote) {
   margin: 1rem 0;
   padding: 0 1rem;
-  border-left: 4px solid #6366f1;
-  color: #94a3b8;
+  border-left: 4px solid var(--accent-primary);
+  color: var(--text-muted);
   font-style: italic;
   background: rgba(99, 102, 241, 0.05);
   padding: 1rem;
