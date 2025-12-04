@@ -4,7 +4,7 @@
       <div class="login-header">
         <div class="login-logo">
           <div class="app-logo-icon">
-            <UIcon name="i-lucide-file-text" size="xl" />
+            <FontAwesomeIcon icon="file-text" size="xl" />
           </div>
           <h1 class="login-title">{{ config.public.appName }}</h1>
           <p class="login-subtitle">现代化动画笔记应用</p>

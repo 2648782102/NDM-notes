@@ -35,7 +35,7 @@
         </div>
         <div class="mobile-header-right">
           <button class="btn-primary btn-mobile-new" @click="handleNewNoteMobile">
-            <UIcon name="i-lucide-plus" size="sm" />
+            <FontAwesomeIcon icon="plus" size="sm" />
             新建
           </button>
         </div>
@@ -59,7 +59,7 @@
           <!-- 编辑视图头部 -->
           <div class="mobile-editor-header">
             <button class="mobile-back-btn" @click="closeMobileEditor">
-              <UIcon name="i-lucide-arrow-left" size="sm" />
+              <FontAwesomeIcon icon="arrow-left" size="sm" />
               <span>返回列表</span>
             </button>
             <h2 class="mobile-editor-title">{{ editor.editor.title || '新建笔记' }}</h2>
@@ -74,7 +74,7 @@
                   title="保存笔记"
                 >
                   <span v-if="editor.saving.value" class="spinner-small"></span>
-                  <UIcon v-else name="i-lucide-save" size="xs" />
+                  <FontAwesomeIcon v-else icon="save" size="xs" />
                 </button>
                 <!-- 删除按钮 -->
                 <button
@@ -83,7 +83,7 @@
                   @click="handleDeleteMobile"
                   title="删除笔记"
                 >
-                  <UIcon name="i-lucide-trash" size="xs" />
+                  <FontAwesomeIcon icon="trash" size="xs" />
                 </button>
               </template>
             </div>

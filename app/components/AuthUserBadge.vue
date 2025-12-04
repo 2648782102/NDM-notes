@@ -4,10 +4,10 @@
       <Transition name="auth-badge" mode="out-in">
         <!-- 加载状态 -->
         <div v-if="status === 'loading'" key="loading" class="auth-badge-skeleton">
-          <USkeleton class="h-10 w-10 rounded-full" />
+          <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-700 animate-pulse"></div>
           <div class="space-y-2">
-            <USkeleton class="h-3 w-20" />
-            <USkeleton class="h-2 w-16" />
+            <div class="h-3 w-20 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
+            <div class="h-2 w-16 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
           </div>
         </div>
 
@@ -22,20 +22,20 @@
               <!-- 头像容器 -->
               <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-semibold text-sm transition-all duration-300 hover:scale-110 hover:shadow-md">
                 <!-- 默认头像图标 -->
-                <UIcon v-if="!user.avatar && userInitial === '?'" name="i-lucide-user" size="md" />
+                <FontAwesomeIcon v-if="!user.avatar && userInitial === '?'" icon="user" size="md" />
                 <!-- 用户名首字母 -->
                 <span v-else>{{ userInitial }}</span>
               </div>
               <!-- 状态指示器 -->
-              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-card transition-all duration-300 hover:scale-125"></div>
+              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-gray-800 transition-all duration-300 hover:scale-125"></div>
             </div>
             
             <!-- 用户信息 -->
             <div class="space-y-0.5">
-              <span class="block text-sm font-semibold text-foreground transition-colors duration-300 hover:text-primary">
+              <span class="block text-sm font-semibold text-primary transition-colors duration-300 hover:text-primary">
                 {{ user.username }}
               </span>
-              <span class="block text-xs text-muted-foreground">
+              <span class="block text-xs text-gray-500 dark:text-gray-400">
                 已登录
               </span>
             </div>
@@ -45,7 +45,7 @@
               @click="onLogout"
               class="logout-button"
             >
-              <UIcon name="i-lucide-log-out" size="sm" />
+              <FontAwesomeIcon icon="right-from-bracket" size="sm" />
               <span class="ml-1">退出</span>
             </button>
           </div>
@@ -55,7 +55,7 @@
         <div v-else key="login" class="auth-badge-login">
           <NuxtLink to="/login" class="login-link">
             <button class="login-button">
-              <UIcon name="i-lucide-log-in" size="sm" />
+              <FontAwesomeIcon icon="right-to-bracket" size="sm" />
               <span class="ml-1">登录</span>
             </button>
           </NuxtLink>
@@ -65,10 +65,10 @@
     <template #fallback>
       <div class="auth-badge">
         <div class="auth-badge-skeleton">
-          <USkeleton class="h-10 w-10 rounded-full" />
+          <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-700 animate-pulse"></div>
           <div class="space-y-2">
-            <USkeleton class="h-3 w-20" />
-            <USkeleton class="h-2 w-16" />
+            <div class="h-3 w-20 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
+            <div class="h-2 w-16 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
           </div>
         </div>
       </div>

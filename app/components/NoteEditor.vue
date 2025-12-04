@@ -11,7 +11,7 @@
           title="保存笔记"
         >
           <span v-if="saving" class="spinner-small" />
-          <UIcon name="i-lucide-save" size="sm" />
+          <FontAwesomeIcon icon="save" size="sm" />
           <span>{{ currentNoteId ? '保存' : '创建' }}</span>
         </button>
         
@@ -21,7 +21,7 @@
           @click="$emit('delete')"
           title="删除笔记"
         >
-          <UIcon name="i-lucide-trash" size="sm" />
+          <FontAwesomeIcon icon="trash" size="sm" />
           删除
         </button>
       </div>
@@ -29,76 +29,76 @@
       <!-- 标题格式工具栏 -->
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="insertMarkdown('# ', '标题 1')" title="标题 1">
-          <UIcon name="i-lucide-heading-1" size="sm" />
+          <FontAwesomeIcon icon="heading" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('## ', '标题 2')" title="标题 2">
-          <UIcon name="i-lucide-heading-2" size="sm" />
+          <FontAwesomeIcon icon="heading" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('### ', '标题 3')" title="标题 3">
-          <UIcon name="i-lucide-heading-3" size="sm" />
+          <FontAwesomeIcon icon="heading" size="sm" />
         </button>
       </div>
       
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="wrapMarkdown('**', '**')" title="加粗">
-          <UIcon name="i-lucide-bold" size="sm" />
+          <FontAwesomeIcon icon="bold" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('*', '*')" title="斜体">
-          <UIcon name="i-lucide-italic" size="sm" />
+          <FontAwesomeIcon icon="italic" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('`', '`')" title="行内代码">
-          <UIcon name="i-lucide-code" size="sm" />
+          <FontAwesomeIcon icon="code" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('~~', '~~')" title="删除线">
-          <UIcon name="i-lucide-strikethrough" size="sm" />
+          <FontAwesomeIcon icon="strikethrough" size="sm" />
         </button>
       </div>
       
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="insertMarkdown('- ', '列表项')" title="无序列表">
-          <UIcon name="i-lucide-list" size="sm" />
+          <FontAwesomeIcon icon="list" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('1. ', '有序列表项')" title="有序列表">
-          <UIcon name="i-lucide-list-ordered" size="sm" />
+          <FontAwesomeIcon icon="list-ol" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('- [ ] ', '任务列表项')" title="任务列表">
-          <UIcon name="i-lucide-list-checks" size="sm" />
+          <FontAwesomeIcon icon="list-check" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('> ', '引用')" title="引用">
-          <UIcon name="i-lucide-quote" size="sm" />
+          <FontAwesomeIcon icon="quote-right" size="sm" />
         </button>
       </div>
       
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="insertTable()" title="表格">
-          <UIcon name="i-lucide-table" size="sm" />
+          <FontAwesomeIcon icon="table" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('---\n\n', '')" title="分隔线">
-          <UIcon name="i-lucide-minus" size="sm" />
+          <FontAwesomeIcon icon="minus" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('^[脚注内容]\n\n', '')" title="脚注">
-          <UIcon name="i-lucide-asterisk" size="sm" />
+          <FontAwesomeIcon icon="asterisk" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('==', '==')" title="高亮文本">
-          <UIcon name="i-lucide-highlight" size="sm" />
+          <FontAwesomeIcon icon="highlighter" size="sm" />
         </button>
       </div>
       
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="wrapMarkdown('<sup>', '</sup>')" title="上标">
-          <UIcon name="i-lucide-superscript" size="sm" />
+          <FontAwesomeIcon icon="superscript" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('<sub>', '</sub>')" title="下标">
-          <UIcon name="i-lucide-subscript" size="sm" />
+          <FontAwesomeIcon icon="subscript" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertLink()" title="链接">
-          <UIcon name="i-lucide-link" size="sm" />
+          <FontAwesomeIcon icon="link" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertImage()" title="图片">
-          <UIcon name="i-lucide-image" size="sm" />
+          <FontAwesomeIcon icon="image" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertCodeBlock()" title="代码块">
-          <UIcon name="i-lucide-code" size="sm" />
+          <FontAwesomeIcon icon="code" size="sm" />
         </button>
       </div>
     </div>
@@ -122,15 +122,15 @@
             ref="titleInput"
           />
           <!-- 添加编辑按钮，适合移动端用户 -->
-          <button 
-            v-if="!isEditing" 
-            class="note-editor-edit-btn"
-            @click="startEditing"
-            title="编辑笔记"
-          >
-            <UIcon name="i-lucide-edit" size="sm" />
-            编辑
-          </button>
+        <button 
+          v-if="!isEditing" 
+          class="note-editor-edit-btn"
+          @click="startEditing"
+          title="编辑笔记"
+        >
+          <FontAwesomeIcon icon="edit" size="sm" />
+          编辑
+        </button>
         </div>
         
         <!-- 元数据输入 - 只在编辑模式显示 -->
@@ -204,7 +204,7 @@
             @click="handleRemoveTag(tag)"
             title="移除标签"
           >
-            <UIcon name="i-lucide-x" size="sm" />
+            <FontAwesomeIcon icon="xmark" size="sm" />
           </button>
         </span>
       </TransitionGroup>

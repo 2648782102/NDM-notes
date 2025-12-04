@@ -1,6 +1,5 @@
 <template>
-  <UApp>
-    <div class="app-root">
+  <div class="app-root">
       <!-- 背景效果 -->
       <div class="app-bg app-bg-1" />
       <div class="app-bg app-bg-2" />
@@ -13,7 +12,7 @@
           <div class="app-header-left">
             <div class="app-logo app-logo-header" @click="onLogoClick">
               <div class="app-logo-icon">
-                <UIcon name="i-lucide-file-text" size="lg" />
+                <FontAwesomeIcon icon="file-text" size="xl" />
               </div>
               <div class="app-logo-text app-logo-text-header">
                 <div class="app-logo-title">{{ config.public.appName }}</div>
@@ -28,8 +27,8 @@
               @click="toggleTheme"
               class="theme-toggle-native"
             >
-              <UIcon v-if="currentTheme === 'dark'" name="i-lucide-sun" size="lg" class="text-yellow-400 transition-colors duration-300" />
-              <UIcon v-else name="i-lucide-moon" size="lg" class="text-indigo-500 transition-colors duration-300" />
+              <FontAwesomeIcon v-if="currentTheme === 'dark'" icon="sun" size="xl" class="text-yellow-400 transition-colors duration-300" />
+              <FontAwesomeIcon v-else icon="moon" size="xl" class="text-indigo-500 transition-colors duration-300" />
             </button>
 
             <!-- 用户信息区域 - 原生实现 -->
@@ -49,7 +48,7 @@
                   <span class="username">{{ user.username }}</span>
                   <!-- 退出按钮 -->
                   <button class="logout-btn" @click="handleLogout">
-                    <UIcon name="i-lucide-log-out" size="sm" />
+                    <FontAwesomeIcon icon="right-from-bracket" size="sm" />
                   </button>
                 </div>
               </template>
@@ -57,7 +56,7 @@
               <template v-else>
                 <NuxtLink to="/login" class="login-link">
                   <button class="login-btn">
-                    <UIcon name="i-lucide-log-in" size="sm" />
+                    <FontAwesomeIcon icon="right-to-bracket" size="sm" />
                     <span>登录</span>
                   </button>
                 </NuxtLink>
@@ -76,26 +75,25 @@
     <footer class="app-footer-mobile">
     <nav class="app-nav-mobile">
       <button class="nav-item" @click="$router.push('/')">
-        <UIcon name="i-lucide-home" size="lg" />
+        <FontAwesomeIcon icon="home" size="xl" />
         <span>首页</span>
       </button>
       <button class="nav-item" @click="handleNewNote">
-        <UIcon name="i-lucide-plus" size="lg" />
+        <FontAwesomeIcon icon="plus" size="xl" />
         <span>新建</span>
       </button>
       <button class="nav-item" @click="toggleTheme">
-        <UIcon v-if="currentTheme === 'dark'" name="i-lucide-sun" size="lg" />
-        <UIcon v-else name="i-lucide-moon" size="lg" />
+        <FontAwesomeIcon v-if="currentTheme === 'dark'" icon="sun" size="xl" />
+        <FontAwesomeIcon v-else icon="moon" size="xl" />
         <span>主题</span>
       </button>
       <button class="nav-item" @click="$router.push('/profile')">
-        <UIcon name="i-lucide-user" size="lg" />
+        <FontAwesomeIcon icon="user" size="xl" />
         <span>我的</span>
       </button>
     </nav>
   </footer>
     </div>
-  </UApp>
 </template>
 
 <script setup lang="ts">

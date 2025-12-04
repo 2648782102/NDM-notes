@@ -6,7 +6,7 @@
         <h2 class="note-list-heading">笔记分类</h2>
       </div>
       <button class="btn-primary btn-new-note" @click="$emit('new-note')">
-          <UIcon class="btn-icon" name="i-lucide-plus" size="sm" />
+          <FontAwesomeIcon class="btn-icon" icon="plus" size="sm" />
           新建笔记
         </button>
     </div>
@@ -18,7 +18,7 @@
           :class="{ 'category-tag-active': !activeCategory }"
           @click="$emit('filter-change', null)"
         >
-          <UIcon class="category-icon" name="i-lucide-layers" size="sm" />
+          <FontAwesomeIcon class="category-icon" icon="layers" size="sm" />
           全部
         </button>
         <TransitionGroup name="category" tag="div" class="category-list">
@@ -29,7 +29,7 @@
             :class="{ 'category-tag-active': activeCategory === cat }"
             @click="$emit('filter-change', cat)"
           >
-            <UIcon class="category-icon" name="i-lucide-folder" size="sm" />
+            <FontAwesomeIcon class="category-icon" icon="folder" size="sm" />
             {{ cat }}
           </button>
         </TransitionGroup>
@@ -96,7 +96,7 @@
               key="empty"
             >
               <div class="empty-state">
-                <UIcon class="empty-icon" name="i-lucide-file-text" size="2xl" />
+                <FontAwesomeIcon class="empty-icon" icon="file-text" size="2xl" />
                 <p class="empty-text">暂无笔记，点击右上角「新建笔记」开始记录吧～</p>
               </div>
             </div>
