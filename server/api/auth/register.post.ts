@@ -1,6 +1,6 @@
-import { readBody } from 'h3'
+import { readBody, createError } from 'h3'
 import { createSession } from '../../utils/session'
-import { createUser } from '../../utils/db'
+import { createUser, verifyUser } from '../../utils/db'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ username?: string; password?: string }>(event)

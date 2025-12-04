@@ -1,9 +1,0 @@
-@import "tailwindcss";
-@import "@nuxt/ui";
-
-/* 全局样式补充 */
-body {
-  -webkit-font-smoothing: antialiased;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter",
-    "Segoe UI", sans-serif;
-}

@@ -5,29 +5,6 @@ export default defineNuxtConfig({
     enabled: false // 生产环境禁用 devtools
   },
 
-  // 添加 Nuxt UI 模块
-  modules: ['@nuxt/ui'],
-
-  // Nuxt UI 配置
-  ui: {
-    // 主题配置
-    theme: {
-      extend: {
-        colors: {
-          // 可以在这里扩展或覆盖默认颜色
-          primary: '#6366f1',
-          secondary: '#818cf8',
-          accent: '#a5b4fc',
-          success: '#10b981',
-          warning: '#f59e0b',
-          error: '#ef4444',
-        }
-      }
-    },
-    // 禁用字体功能，避免连接Google Fonts超时
-    fonts: false
-  },
-
   app: {
     head: {
       title: 'NDM Notes',
