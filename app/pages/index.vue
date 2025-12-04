@@ -35,10 +35,7 @@
         </div>
         <div class="mobile-header-right">
           <button class="btn-primary btn-mobile-new" @click="handleNewNoteMobile">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <UIcon name="i-lucide-plus" size="sm" />
             新建
           </button>
         </div>
@@ -62,10 +59,7 @@
           <!-- 编辑视图头部 -->
           <div class="mobile-editor-header">
             <button class="mobile-back-btn" @click="closeMobileEditor">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
+              <UIcon name="i-lucide-arrow-left" size="sm" />
               <span>返回列表</span>
             </button>
             <h2 class="mobile-editor-title">{{ editor.editor.title || '新建笔记' }}</h2>
@@ -80,7 +74,7 @@
                   title="保存笔记"
                 >
                   <span v-if="editor.saving.value" class="spinner-small"></span>
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                  <UIcon v-else name="i-lucide-save" size="xs" />
                 </button>
                 <!-- 删除按钮 -->
                 <button
@@ -89,7 +83,7 @@
                   @click="handleDeleteMobile"
                   title="删除笔记"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  <UIcon name="i-lucide-trash" size="xs" />
                 </button>
               </template>
             </div>
@@ -315,9 +309,9 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
-  background: rgba(15, 23, 42, 0.9);
-  border-bottom: 1px solid rgba(51, 65, 85, 0.8);
+  padding: 0.75rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
   backdrop-filter: blur(12px);
 }
 
@@ -326,7 +320,7 @@ onMounted(async () => {
 }
 
 .mobile-header-title {
-  font-size: 1.125rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
@@ -342,22 +336,22 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.625rem 1rem;
+  padding: 0.5rem 0.875rem;
   border-radius: var(--radius-lg);
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
   color: white;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   border: none;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-mobile-new:hover {
   background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary));
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(129, 140, 248, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 /* 移动端编辑视图 - 全屏覆盖 */
@@ -385,11 +379,11 @@ onMounted(async () => {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: rgba(15, 23, 42, 0.95);
-  border-top: 1px solid rgba(51, 65, 85, 0.8);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
   backdrop-filter: blur(12px);
   z-index: 1001;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   /* 增强底部操作栏的视觉层次 */
   border-radius: 1rem 1rem 0 0;
 }
@@ -485,19 +479,19 @@ onMounted(async () => {
   width: 2.25rem;
   padding: 0;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(244, 63, 94, 0.4);
-  background: rgba(244, 63, 94, 0.05);
-  color: #fda4af;
+  border: 1px solid var(--error-color);
+  background: var(--bg-card);
+  color: var(--error-color);
   cursor: pointer;
   transition: var(--transition);
 }
 
 .btn-delete-mobile:hover {
-  background: rgba(244, 63, 94, 0.15);
-  border-color: rgba(244, 63, 94, 0.6);
-  color: #fecdd3;
+  background: var(--error-color);
+  border-color: var(--error-color);
+  color: white;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
 }
 
 /* 小加载动画 */
@@ -505,8 +499,8 @@ onMounted(async () => {
   display: inline-block;
   width: 0.625rem;
   height: 0.625rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -564,6 +558,94 @@ onMounted(async () => {
 .mobile-editor-leave-to {
   opacity: 0;
   transform: translateX(-100%);
+}
+
+/* 移动端图标样式优化 */
+.mobile-editor-content .i-lucide,
+.mobile-editor-content .u-icon {
+  color: currentColor;
+  transition: color 0.2s ease;
+  width: 1rem;
+  height: 1rem;
+  display: inline-block;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mobile-editor-content .toolbar-btn .i-lucide,
+.mobile-editor-content .toolbar-btn .u-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* 移动端保存和删除按钮图标样式 */
+.btn-save-mobile .i-lucide,
+.btn-save-mobile .u-icon,
+.btn-delete-mobile .i-lucide,
+.btn-delete-mobile .u-icon {
+  color: currentColor;
+  transition: color 0.2s ease;
+  width: 0.75rem;
+  height: 0.75rem;
+  display: inline-block;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 移动端返回按钮图标样式 */
+.mobile-back-btn .i-lucide,
+.mobile-back-btn .u-icon {
+  color: currentColor;
+  transition: color 0.2s ease;
+  width: 0.875rem;
+  height: 0.875rem;
+  display: inline-block;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 深色主题下的图标样式 */
+.dark .mobile-editor-content .i-lucide,
+.dark .mobile-editor-content .u-icon,
+.dark .btn-save-mobile .i-lucide,
+.dark .btn-save-mobile .u-icon,
+.dark .btn-delete-mobile .i-lucide,
+.dark .btn-delete-mobile .u-icon,
+.dark .mobile-back-btn .i-lucide,
+.dark .mobile-back-btn .u-icon {
+  color: currentColor;
+}
+
+/* 确保移动端工具栏图标在所有状态下都能正确显示 */
+.mobile-editor-content .toolbar-btn:hover .i-lucide,
+.mobile-editor-content .toolbar-btn:hover .u-icon {
+  color: var(--accent-primary);
+}
+
+/* 确保移动端保存和删除按钮图标在所有状态下都能正确显示 */
+.btn-save-mobile:hover .i-lucide,
+.btn-save-mobile:hover .u-icon,
+.btn-delete-mobile:hover .i-lucide,
+.btn-delete-mobile:hover .u-icon {
+  color: white;
+}
+
+/* 确保移动端返回按钮图标在所有状态下都能正确显示 */
+.mobile-back-btn:hover .i-lucide,
+.mobile-back-btn:hover .u-icon {
+  color: var(--accent-primary);
 }
 
 /* 响应式设计 */

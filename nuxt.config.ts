@@ -31,8 +31,8 @@ export default defineNuxtConfig({
       title: 'NDM Notes',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        {
-          name: 'description',
+        { 
+          name: 'description', 
           content: '现代化动画笔记应用，基于 Nuxt 全栈实现'
         }
       ]

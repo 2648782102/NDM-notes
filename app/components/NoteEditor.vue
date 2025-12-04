@@ -11,7 +11,7 @@
           title="保存笔记"
         >
           <span v-if="saving" class="spinner-small" />
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          <UIcon name="i-lucide-save" size="sm" />
           <span>{{ currentNoteId ? '保存' : '创建' }}</span>
         </button>
         
@@ -21,7 +21,7 @@
           @click="$emit('delete')"
           title="删除笔记"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          <UIcon name="i-lucide-trash" size="sm" />
           删除
         </button>
       </div>
@@ -29,79 +29,76 @@
       <!-- 标题格式工具栏 -->
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="insertMarkdown('# ', '标题 1')" title="标题 1">
-          <strong>H1</strong>
+          <UIcon name="i-lucide-heading-1" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('## ', '标题 2')" title="标题 2">
-          <strong>H2</strong>
+          <UIcon name="i-lucide-heading-2" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('### ', '标题 3')" title="标题 3">
-          <strong>H3</strong>
+          <UIcon name="i-lucide-heading-3" size="sm" />
         </button>
       </div>
       
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="wrapMarkdown('**', '**')" title="加粗">
-          <strong>B</strong>
+          <UIcon name="i-lucide-bold" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('*', '*')" title="斜体">
-          <em>I</em>
+          <UIcon name="i-lucide-italic" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('`', '`')" title="行内代码">
-          <code>`</code>
+          <UIcon name="i-lucide-code" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('~~', '~~')" title="删除线">
-          <del>S</del>
+          <UIcon name="i-lucide-strikethrough" size="sm" />
         </button>
       </div>
       
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="insertMarkdown('- ', '列表项')" title="无序列表">
-          <span>• List</span>
+          <UIcon name="i-lucide-list" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('1. ', '有序列表项')" title="有序列表">
-          <span>1. List</span>
+          <UIcon name="i-lucide-list-ordered" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('- [ ] ', '任务列表项')" title="任务列表">
-          <span>☐ Task</span>
+          <UIcon name="i-lucide-list-checks" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('> ', '引用')" title="引用">
-          <span>" Quote</span>
+          <UIcon name="i-lucide-quote" size="sm" />
         </button>
       </div>
       
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="insertTable()" title="表格">
-          <span>📊 Table</span>
+          <UIcon name="i-lucide-table" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('---\n\n', '')" title="分隔线">
-          <span>—</span>
+          <UIcon name="i-lucide-minus" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('^[脚注内容]\n\n', '')" title="脚注">
-          <span>¹ Footnote</span>
+          <UIcon name="i-lucide-asterisk" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('==', '==')" title="高亮文本">
-          <span>💡 Highlight</span>
+          <UIcon name="i-lucide-highlight" size="sm" />
         </button>
       </div>
       
       <div class="toolbar-section">
         <button class="toolbar-btn" @click="wrapMarkdown('<sup>', '</sup>')" title="上标">
-          <span>x² Sup</span>
+          <UIcon name="i-lucide-superscript" size="sm" />
         </button>
         <button class="toolbar-btn" @click="wrapMarkdown('<sub>', '</sub>')" title="下标">
-          <span>H₂O Sub</span>
+          <UIcon name="i-lucide-subscript" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertLink()" title="链接">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-          链接
+          <UIcon name="i-lucide-link" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertImage()" title="图片">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          图片
+          <UIcon name="i-lucide-image" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertCodeBlock()" title="代码块">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-          代码块
+          <UIcon name="i-lucide-code" size="sm" />
         </button>
       </div>
     </div>
@@ -131,7 +128,7 @@
             @click="startEditing"
             title="编辑笔记"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <UIcon name="i-lucide-edit" size="sm" />
             编辑
           </button>
         </div>
@@ -207,7 +204,7 @@
             @click="handleRemoveTag(tag)"
             title="移除标签"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <UIcon name="i-lucide-x" size="sm" />
           </button>
         </span>
       </TransitionGroup>
@@ -595,9 +592,9 @@ const insertTable = () => {
   flex-direction: column;
   min-height: 70vh;
   overflow: hidden;
-  background: rgba(15, 23, 42, 0.72);
+  background: var(--bg-card);
   border-radius: 1rem;
-  border: 1px solid rgba(51, 65, 85, 0.85);
+  border: 1px solid var(--border-color);
   backdrop-filter: blur(24px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -739,33 +736,36 @@ const insertTable = () => {
 
 /* 工具栏保存按钮样式 */
 .toolbar-btn.btn-save {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.3));
-  border-color: rgba(99, 102, 241, 0.5);
-  color: var(--accent-tertiary);
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 .toolbar-btn.btn-save:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(129, 140, 248, 0.3), rgba(99, 102, 241, 0.4));
-  border-color: rgba(129, 140, 248, 0.6);
-  color: var(--accent-tertiary);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border-color: var(--accent-secondary);
+  color: white;
 }
 
 .toolbar-btn.btn-save:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border-color: var(--border-color);
 }
 
 /* 工具栏删除按钮样式 */
 .toolbar-btn.btn-delete {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
-  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+  border-color: var(--error-color);
   color: var(--error-color);
 }
 
 .toolbar-btn.btn-delete:hover {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.3));
-  border-color: rgba(239, 68, 68, 0.6);
-  color: var(--error-color);
+  background: linear-gradient(135deg, var(--error-color), var(--warning-color));
+  border-color: var(--warning-color);
+  color: white;
 }
 
 /* 小加载动画 */
@@ -808,8 +808,8 @@ const insertTable = () => {
   gap: 0.375rem;
   padding: 0.375rem;
   border-radius: 0.5rem;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
@@ -821,7 +821,7 @@ const insertTable = () => {
   padding: 0.375rem 0.5rem;
   border: 1px solid var(--border-color);
   background: var(--bg-card);
-  color: var(--text-secondary);
+  color: var(--text-primary);
   border-radius: 0.375rem;
   font-size: 0.75rem;
   cursor: pointer;
@@ -835,9 +835,28 @@ const insertTable = () => {
 .toolbar-btn:hover {
   background: var(--bg-hover);
   border-color: var(--accent-primary);
-  color: var(--accent-tertiary);
+  color: var(--accent-primary);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+/* 确保图标在深色和浅色主题下都能正常显示 */
+.toolbar-btn .u-icon {
+  color: currentColor;
+  transition: color all 0.2s ease;
+}
+
+/* 深色主题下的按钮样式优化 */
+.dark .toolbar-btn {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark .toolbar-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 /* 内容编辑区域包装器 */
@@ -1188,8 +1207,8 @@ const insertTable = () => {
   flex-wrap: wrap;
   gap: 0.5rem;
   padding: 1rem 1.25rem;
-  border-top: 1px solid rgba(51, 65, 85, 0.5);
-  background: rgba(8, 14, 30, 0.3);
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
 }
 
 .tags-container {
@@ -1204,12 +1223,12 @@ const insertTable = () => {
   align-items: center;
   gap: 0.375rem;
   border-radius: 9999px;
-  background-color: rgba(30, 41, 59, 0.8);
+  background-color: var(--bg-card);
   padding: 0.375rem 0.875rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #e5e7eb;
-  border: 1px solid rgba(79, 70, 229, 0.2);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
   transition: all 0.2s ease;
   animation: tagSlideIn 0.3s ease;
 }
@@ -1431,26 +1450,44 @@ const insertTable = () => {
   }
 }
 
-/* 编辑器模式切换动画 */
+/* 编辑器模式切换动画 - 重新设计，更适合布局切换 */
 .editor-mode-enter-active,
 .editor-mode-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .editor-mode-enter-from {
   opacity: 0;
-  transform: scale(0.95) translateY(10px);
+  transform: translateY(5px);
+  filter: blur(2px);
 }
 
 .editor-mode-leave-to {
   opacity: 0;
-  transform: scale(0.95) translateY(-10px);
+  transform: translateY(-5px);
+  filter: blur(2px);
 }
 
 .editor-mode-enter-to,
 .editor-mode-leave-from {
   opacity: 1;
-  transform: scale(1) translateY(0);
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* 确保内容区域相对定位，让绝对定位的过渡元素正常工作 */
+.note-editor-content {
+  position: relative;
+}
+
+/* 确保编辑和预览容器高度一致，避免布局跳动 */
+.note-editor-preview-full,
+.note-editor-edit-container {
+  height: 100%;
+  min-height: 400px;
 }
 
 /* 编辑模式容器 */
@@ -1530,23 +1567,25 @@ const insertTable = () => {
     padding: 0.5rem 0;
   }
   
-  /* 移动端元数据输入 */
+  /* 移动端元数据输入 - 改为单行显示 */
   .note-editor-meta {
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
   }
   
   .note-editor-meta-input {
-    width: 100%;
-    background: rgba(15, 23, 42, 0.8);
+    flex: 1;
+    min-width: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
   }
   
   /* 移动端工具栏 */
   .note-editor-toolbar {
     padding: 0.5rem 0.75rem;
     gap: 0.5rem;
-    background: rgba(8, 14, 30, 0.95);
-    border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
     overflow-x: auto;
     flex-wrap: nowrap;
     /* 优化滚动体验 */
@@ -1557,7 +1596,7 @@ const insertTable = () => {
     top: 0;
     z-index: 10;
     /* 添加阴影，增强层次感 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
   }
 
   .note-editor-toolbar::-webkit-scrollbar {
@@ -1566,12 +1605,12 @@ const insertTable = () => {
 
   .toolbar-section {
     gap: 0.25rem;
-    background: rgba(15, 23, 42, 0.9);
+    background: var(--bg-card);
     padding: 0.25rem;
     flex-shrink: 0;
     border-radius: 0.5rem;
     /* 添加边框，增强视觉效果 */
-    border: 1px solid rgba(51, 65, 85, 0.6);
+    border: 1px solid var(--border-color);
   }
 
   .toolbar-btn {
@@ -1594,10 +1633,69 @@ const insertTable = () => {
     min-width: 2.25rem;
     min-height: 2.25rem;
     padding: 0.5rem;
+    background: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+  
+  .toolbar-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+  }
+  
+  /* 移动端工具栏图标样式 */
+  .toolbar-btn .i-lucide {
+    color: currentColor;
+    transition: color 0.2s ease;
+    width: 0.875rem;
+    height: 0.875rem;
+    display: inline-block;
+    vertical-align: middle;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  
+  .toolbar-btn:hover .i-lucide {
+    color: var(--accent-primary);
+  }
+  
+  /* 深色主题下的移动端工具栏图标样式 */
+  .dark .toolbar-btn .i-lucide {
+    color: currentColor;
+  }
+  
+  /* 确保所有工具栏图标都能正确显示 */
+  .toolbar-btn .u-icon {
+    color: currentColor;
+    transition: color 0.2s ease;
+    width: 0.875rem;
+    height: 0.875rem;
+    display: inline-block;
+    vertical-align: middle;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  
+  .toolbar-btn:hover .u-icon {
+    color: var(--accent-primary);
+  }
+  
+  /* 深色主题下的工具栏图标样式 */
+  .dark .toolbar-btn .u-icon {
+    color: currentColor;
   }
   
   .toolbar-section {
     gap: 0.375rem;
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
   }
   
   /* 移动端内容区域 */

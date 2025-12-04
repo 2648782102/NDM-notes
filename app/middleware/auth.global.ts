@@ -6,8 +6,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return
   }
   
-  // 如果状态是 idle，尝试获取用户信息
-  if (status.value === 'idle') {
+  // 在中间件中只在服务端尝试获取用户信息
+  // 客户端的 fetchMe 调用由 useAuth 组合式函数在客户端处理
+  if (process.server && status.value === 'idle') {
     await fetchMe()
   }
   

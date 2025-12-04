@@ -1,24 +1,50 @@
+import { onNuxtReady } from '#app'
+import { createError } from 'h3'
+import { watch } from 'vue'
+
 export interface AuthUser {
   id: string
   username: string
 }
 
 export function useAuth() {
-  const user = useState<AuthUser | null>('auth:user', () => null)
+  // 从 localStorage 中恢复用户信息（如果存在）
+  const initialUser = process.client ? JSON.parse(localStorage.getItem('auth:user') || 'null') : null
+  const user = useState<AuthUser | null>('auth:user', () => initialUser)
+  
   const status = useState<'idle' | 'loading' | 'authenticated'>(
     'auth:status',
-    () => 'idle'
+    () => initialUser ? 'authenticated' : 'idle'
   )
 
+  // 监听用户状态变化，自动保存到 localStorage
+  watch(user, (newUser) => {
+    if (process.client) {
+      localStorage.setItem('auth:user', JSON.stringify(newUser))
+    }
+  }, { deep: true })
+
   const fetchMe = async () => {
+    // 如果已经在加载中，避免重复调用
+    if (status.value === 'loading') {
+      console.log('useAuth: Already loading, skipping fetchMe')
+      return
+    }
+    
+    console.log('useAuth: Starting fetchMe')
     status.value = 'loading'
     try {
       const data = await $fetch<AuthUser | null>('/api/auth/me', {
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       })
+      console.log('useAuth: fetchMe succeeded, user:', data)
       user.value = data ?? null
       status.value = user.value ? 'authenticated' : 'idle'
-    } catch {
+    } catch (error) {
+      console.error('useAuth: fetchMe failed:', error)
       user.value = null
       status.value = 'idle'
     }
@@ -30,13 +56,25 @@ export function useAuth() {
       const data = await $fetch<AuthUser>('/api/auth/login', {
         method: 'POST',
         body: payload,
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       })
+      console.log('useAuth: Login succeeded, user data:', data)
+      // 直接设置用户状态，不依赖 cookie
       user.value = data
       status.value = 'authenticated'
+      return data
     } catch (error: any) {
+      console.error('useAuth: Login failed:', error)
       status.value = 'idle'
-      throw createError(error)
+      // 确保错误对象有 message 属性
+      if (error instanceof Error) {
+        throw error
+      } else {
+        throw new Error(error.message || '登录失败')
+      }
     }
   }
 
@@ -52,12 +90,21 @@ export function useAuth() {
     } finally {
       user.value = null
       status.value = 'idle'
+      // 清除 localStorage 中的用户信息
+      if (process.client) {
+        localStorage.removeItem('auth:user')
+      }
     }
   }
 
-  // 应用加载时自动获取当前用户（仅在客户端且状态为 idle 时）
-  if (process.client && status.value === 'idle' && !user.value) {
-    // 避免在 SSR 期间重复调用，也避免在中间件已经调用后重复调用
+  // 在客户端加载时，如果有 localStorage 中的用户信息，直接设置为已认证状态
+  // 这样即使刷新页面，用户也不会被重定向到登录页面
+  if (process.client && initialUser) {
+    console.log('useAuth: Restored user from localStorage:', initialUser)
+    user.value = initialUser
+    status.value = 'authenticated'
+  } else if (process.client && status.value === 'idle' && !user.value) {
+    console.log('useAuth: No user in localStorage, calling fetchMe')
     fetchMe()
   }
 

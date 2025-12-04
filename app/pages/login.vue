@@ -4,13 +4,7 @@
       <div class="login-header">
         <div class="login-logo">
           <div class="app-logo-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
+            <UIcon name="i-lucide-file-text" size="xl" />
           </div>
           <h1 class="login-title">{{ config.public.appName }}</h1>
           <p class="login-subtitle">现代化动画笔记应用</p>
@@ -91,9 +85,14 @@ const handleLogin = async () => {
   error.value = ''
   
   try {
-    await login({ username: username.value, password: password.value })
-    await router.push('/')
+    const result = await login({ username: username.value, password: password.value })
+    console.log('Login succeeded, user:', result)
+    // 等待一小段时间，确保 cookie 被正确设置
+    setTimeout(async () => {
+      await router.push('/')
+    }, 100)
   } catch (err: any) {
+    console.error('Login failed:', err)
     error.value = err.message || '登录失败，请检查用户名和密码'
   } finally {
     loggingIn.value = false

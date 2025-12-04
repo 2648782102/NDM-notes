@@ -1,88 +1,101 @@
 <template>
-  <div class="app-root">
-    <!-- 背景效果 -->
-    <div class="app-bg app-bg-1" />
-    <div class="app-bg app-bg-2" />
-    <div class="app-bg app-bg-3" />
+  <UApp>
+    <div class="app-root">
+      <!-- 背景效果 -->
+      <div class="app-bg app-bg-1" />
+      <div class="app-bg app-bg-2" />
+      <div class="app-bg app-bg-3" />
 
-    <!-- 折叠菜单 -->
-    <div class="app-sidebar" :class="{ 'app-sidebar-open': isMenuOpen }">
-      <div class="sidebar-content">
-        <!-- Logo -->
-        <div class="app-logo" @click="onLogoClick">
-          <div class="app-logo-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-          </div>
-          <div class="app-logo-text">
-            <div class="app-logo-title">
-              {{ config.public.appName }}
-              <span class="app-logo-badge">v1.0</span>
+      <!-- 顶部导航栏 -->
+      <header class="app-header">
+        <div class="app-header-content">
+          <!-- 左侧：Logo -->
+          <div class="app-header-left">
+            <div class="app-logo app-logo-header" @click="onLogoClick">
+              <div class="app-logo-icon">
+                <UIcon name="i-lucide-file-text" size="lg" />
+              </div>
+              <div class="app-logo-text app-logo-text-header">
+                <div class="app-logo-title">{{ config.public.appName }}</div>
+              </div>
             </div>
-            <p class="app-logo-subtitle">
-              现代动画笔记应用 · Nuxt 全栈示例
-            </p>
+          </div>
+
+          <!-- 右侧：主题切换和用户信息 -->
+          <div class="app-header-right">
+            <!-- 主题切换按钮 -->
+            <button
+              @click="toggleTheme"
+              class="theme-toggle-native"
+            >
+              <UIcon v-if="currentTheme === 'dark'" name="i-lucide-sun" size="lg" class="text-yellow-400 transition-colors duration-300" />
+              <UIcon v-else name="i-lucide-moon" size="lg" class="text-indigo-500 transition-colors duration-300" />
+            </button>
+
+            <!-- 用户信息区域 - 原生实现 -->
+            <div class="user-info-container">
+              <!-- 已登录状态 -->
+              <template v-if="user">
+                <div class="user-info">
+                  <!-- 头像 -->
+                  <div class="user-avatar" @click="toggleUserMenu">
+                    <div class="avatar-inner">
+                      {{ userInitial }}
+                    </div>
+                    <!-- 状态指示器 -->
+                    <div class="status-indicator"></div>
+                  </div>
+                  <!-- 用户名 -->
+                  <span class="username">{{ user.username }}</span>
+                  <!-- 退出按钮 -->
+                  <button class="logout-btn" @click="handleLogout">
+                    <UIcon name="i-lucide-log-out" size="sm" />
+                  </button>
+                </div>
+              </template>
+              <!-- 未登录状态 -->
+              <template v-else>
+                <NuxtLink to="/login" class="login-link">
+                  <button class="login-btn">
+                    <UIcon name="i-lucide-log-in" size="sm" />
+                    <span>登录</span>
+                  </button>
+                </NuxtLink>
+              </template>
+            </div>
           </div>
         </div>
-
-        <!-- 主题切换按钮 -->
-        <UButton
-          size="icon"
-          variant="ghost"
-          color="gray"
-          @click="toggleTheme"
-          class="rounded-full"
-        >
-          <svg v-if="currentTheme === 'dark'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </UButton>
-
-        <!-- 用户认证徽章 -->
-        <AuthUserBadge />
-      </div>
-    </div>
+      </header>
 
     <!-- 主要内容 -->
-    <main class="app-main" :class="{ 'app-main-expanded': isMenuOpen }">
+    <main class="app-main">
       <NuxtPage />
     </main>
 
-    <!-- 悬浮菜单按钮 -->
-        <UButton
-          size="icon"
-          variant="primary"
-          @click="toggleMenu"
-          :class="{ 'floating-menu-btn-open': isMenuOpen }"
-          class="floating-menu-btn rounded-full shadow-lg"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close-icon">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </UButton>
-  </div>
+    <!-- 底部导航栏 - 仅在移动端显示 -->
+    <footer class="app-footer-mobile">
+    <nav class="app-nav-mobile">
+      <button class="nav-item" @click="$router.push('/')">
+        <UIcon name="i-lucide-home" size="lg" />
+        <span>首页</span>
+      </button>
+      <button class="nav-item" @click="handleNewNote">
+        <UIcon name="i-lucide-plus" size="lg" />
+        <span>新建</span>
+      </button>
+      <button class="nav-item" @click="toggleTheme">
+        <UIcon v-if="currentTheme === 'dark'" name="i-lucide-sun" size="lg" />
+        <UIcon v-else name="i-lucide-moon" size="lg" />
+        <span>主题</span>
+      </button>
+      <button class="nav-item" @click="$router.push('/profile')">
+        <UIcon name="i-lucide-user" size="lg" />
+        <span>我的</span>
+      </button>
+    </nav>
+  </footer>
+    </div>
+  </UApp>
 </template>
 
 <script setup lang="ts">
@@ -117,11 +130,31 @@ const onLogoClick = () => {
   useRouter().push('/')
 }
 
-// 折叠菜单功能
-const isMenuOpen = ref(false)
+// 新建笔记功能
+const handleNewNote = () => {
+  // 这里可以添加新建笔记的逻辑
+  useRouter().push('/')
+}
 
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value
+// 用户认证相关
+const { user, logout } = useAuth()
+const router = useRouter()
+const userMenuOpen = ref(false)
+
+// 计算用户名首字母
+const userInitial = computed(() => {
+  return user.value?.username ? user.value.username.charAt(0).toUpperCase() : '?'
+})
+
+// 切换用户菜单
+const toggleUserMenu = () => {
+  userMenuOpen.value = !userMenuOpen.value
+}
+
+// 处理用户退出登录
+const handleLogout = async () => {
+  await logout()
+  router.push('/login')
 }
 </script>
 
@@ -232,7 +265,8 @@ body {
 
 /* 应用根容器 */
 .app-root {
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
   background: 
     radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 55%),
     radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.06), transparent 55%),
@@ -241,6 +275,8 @@ body {
   color: var(--text-primary);
   position: relative;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* 背景装饰 */
@@ -254,6 +290,15 @@ body {
   /* 提升动画性能 */
   transform: translateZ(0);
   will-change: transform;
+}
+
+/* 确保body和html没有默认边距和滚动 */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .app-bg-1 {
@@ -483,135 +528,162 @@ body {
   box-shadow: var(--shadow-md);
 }
 
+/* 确保深色主题下太阳图标显示黄色，月亮图标显示蓝色 */
+.dark .theme-toggle-native .text-yellow-400 {
+  color: #facc15 !important;
+}
+
+.dark .theme-toggle-native .text-indigo-500 {
+  color: #6366f1 !important;
+}
+
+/* 原生主题切换按钮样式 */
+.theme-toggle-native {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 深色主题下的按钮样式 */
+.dark .theme-toggle-native {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.4);
+}
+
+/* 按钮悬停效果 */
+.theme-toggle-native:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--accent-primary);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+}
+
+/* 深色主题下的悬停效果 */
+.dark .theme-toggle-native:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: var(--accent-primary);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+}
+
+/* 按钮焦点效果 */
+.theme-toggle-native:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* 按钮:active效果 */
+.theme-toggle-native:active {
+  transform: scale(0.95);
+  transition: all 0.1s ease;
+}
+
+/* 确保按钮内的图标能够正确显示 */
+.theme-toggle-native svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  position: relative;
+  z-index: 10;
+}
+
+/* 添加主题相关的光晕效果 */
+.theme-toggle-native::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+/* 深色主题下的光晕效果 */
+.dark .theme-toggle-native::before {
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.3), transparent 70%);
+}
+
+/* 浅色主题下的光晕效果 */
+.theme-toggle-native:not(.dark *)::before {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.3), transparent 70%);
+}
+
+/* 悬停时光晕效果显示 */
+.theme-toggle-native:hover::before {
+  opacity: 1;
+}
+
 /* 主要内容区域 */
 .app-main {
   display: flex;
   flex: 1;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 3.5rem); /* 减去顶部导航栏高度 */
   overflow: hidden;
   padding: 1rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0;
+  margin-top: 3.5rem; /* 适配顶部导航栏高度 */
+  box-sizing: border-box;
 }
 
 .app-main-expanded {
-  margin-left: 280px;
+  margin-left: 0;
 }
 
-/* 悬浮菜单按钮 */
+/* 悬浮菜单按钮 - 已移除PC端侧边栏，所以不再需要此按钮 */
 .floating-menu-btn {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  width: 3rem;
-  height: 3rem;
-  border: none;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 150;
-  box-shadow: var(--shadow-lg), 0 10px 25px rgba(79, 70, 229, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none;
 }
 
-.floating-menu-btn-open {
-  left: 290px;
-  background: linear-gradient(135deg, var(--error-color), var(--warning-color));
-}
-
-/* PC端优化：部分隐藏，鼠标悬浮时滑出 */
-@media (min-width: 769px) {
-  .floating-menu-btn {
-    left: -2rem; /* 默认只露出右侧1rem */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .floating-menu-btn:hover {
-    left: 1rem; /* 鼠标悬浮时完全显示 */
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-xl), 0 12px 30px rgba(129, 140, 248, 0.4);
-  }
-  
-  /* 菜单打开时保持完全显示 */
-  .floating-menu-btn.floating-menu-btn-open {
-    left: 290px;
-  }
-  
-  /* 菜单打开时鼠标悬浮效果 */
-  .floating-menu-btn.floating-menu-btn-open:hover {
-    left: 290px;
-    transform: translateY(-1px);
-  }
-}
-
-/* 移动端优化：将悬浮菜单按钮移到右下角 */
+/* 移动端适配 - 确保主内容区域不超出视口 */
 @media (max-width: 768px) {
-  .floating-menu-btn {
-    top: auto;
-    bottom: 1rem;
-    left: auto;
-    right: 1rem;
-    width: 2.75rem;
-    height: 2.75rem;
+  /* 调整主内容区域，适配底部导航栏 */
+  .app-main {
+    margin-top: 0;
+    margin-bottom: 4rem;
+    height: calc(100vh - 4rem); /* 减去底部导航栏高度 */
   }
-  
-  /* 菜单打开时的位置调整 */
-  .floating-menu-btn-open {
-    left: auto;
-    right: 1rem;
-    bottom: 1rem;
-  }
-}
-
-/* 菜单图标动画 */
-.menu-icon,
-.close-icon {
-  transition: all 0.3s ease;
-  position: absolute;
-}
-
-.menu-icon {
-  opacity: 1;
-  transform: rotate(0deg);
-}
-
-.close-icon {
-  opacity: 0;
-  transform: rotate(90deg);
-}
-
-.floating-menu-btn-open .menu-icon {
-  opacity: 0;
-  transform: rotate(-90deg);
-}
-
-.floating-menu-btn-open .close-icon {
-  opacity: 1;
-  transform: rotate(0deg);
 }
 
 /* 滚动条样式 */
-.app-sidebar::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
-.app-sidebar::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.4);
   border-radius: 4px;
 }
 
-.app-sidebar::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: rgba(79, 70, 229, 0.4);
   border-radius: 4px;
   transition: background 0.2s ease;
 }
 
-.app-sidebar::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: rgba(79, 70, 229, 0.6);
 }
 
@@ -767,46 +839,279 @@ body {
   }
 }
 
-/* 移动端菜单优化 */
+/* 顶部导航栏样式 */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 190;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.app-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border-radius: 1.5rem;
+  padding: 0.25rem;
+  border: none;
+  backdrop-filter: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: none;
+  position: relative;
+  overflow: visible;
+}
+
+/* 深色主题下的特殊样式 */
+.dark .app-header-right {
+  background: transparent;
+  border: none;
+}
+
+.app-header-right:hover {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+/* 深色主题下的悬停样式 */
+.dark .app-header-right:hover {
+  background: transparent;
+}
+
+/* 用户信息区域样式 */
+.user-info-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: visible;
+}
+
+/* 用户信息样式（已登录状态） */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 深色主题下的用户信息样式 */
+.dark .user-info {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.4);
+}
+
+/* 头像样式 */
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid var(--bg-card);
+}
+
+.user-avatar:hover .avatar-inner {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* 状态指示器样式 */
+.status-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.5);
+}
+
+/* 用户名样式 */
+.username {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+/* 退出按钮样式 */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 50%;
+  color: var(--text-danger);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+.logout-btn:focus-visible {
+  outline: 2px solid rgba(239, 68, 68, 0.5);
+  outline-offset: 2px;
+}
+
+/* 登录按钮样式 */
+.login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border: none;
+  border-radius: 9999px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  outline: none;
+}
+
+.login-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+.login-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* 登录链接样式 */
+.login-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* 确保深色主题下的文本颜色正确 */
+.dark .username {
+  color: var(--text-primary);
+}
+
+/* 确保浅色主题下的元素颜色正确 */
+.user-info {
+  color: var(--text-primary);
+}
+
+/* 调整图标大小 */
+.user-info .i-lucide-log-out,
+.login-btn .i-lucide-log-in {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* 顶部导航栏Logo样式 */
+.app-logo-header {
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.app-logo-text-header {
+  gap: 0.125rem;
+}
+
+/* 底部导航栏 - 仅在移动端显示 */
+.app-footer-mobile {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border-color);
+  z-index: 190;
+  display: none;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* 移动端显示底部导航栏 */
 @media (max-width: 768px) {
-  .app-sidebar {
-    /* 移动端菜单覆盖整个屏幕 */
-    width: 85%;
-    max-width: 280px;
-    /* 优化动画效果 */
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateX(-100%);
-    z-index: 300;
+  /* 隐藏顶部导航栏，显示底部导航栏 */
+  .app-header {
+    display: none;
   }
   
-  .app-sidebar-open {
-    left: 0;
-    transform: translateX(0);
+  /* 调整主内容区域，适配底部导航栏 */
+  .app-main {
+    margin-top: 0;
+    margin-bottom: 4rem;
   }
   
-  .app-main-expanded {
-    margin-left: 0;
-    /* 添加半透明遮罩 */
-    background: rgba(0, 0, 0, 0.5);
-    pointer-events: none;
-    position: relative;
-  }
-  
-  /* 添加遮罩层 */
-  .app-main-expanded::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 200;
-    pointer-events: auto;
-  }
-  
-  /* 优化悬浮菜单按钮 */
-  .floating-menu-btn-open {
-    left: calc(85% + 10px);
-    max-left: 290px;
-    z-index: 350;
+  /* 显示底部导航栏 */
+  .app-footer-mobile {
+    display: block;
   }
   
   /* 优化Logo样式 */
@@ -826,6 +1131,54 @@ body {
   .app-logo-subtitle {
     font-size: 0.6875rem;
   }
+}
+
+/* 底部导航栏内容 */
+.app-nav-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+  padding: 0 1rem;
+}
+
+/* 底部导航项样式 */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  flex: 1;
+}
+
+.nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--accent-primary);
+}
+
+.nav-item svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.nav-item span {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* 导航菜单样式 */
+.app-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 @media (max-width: 768px) {

@@ -1,7 +1,7 @@
 <template>
   <ClientOnly>
     <div class="auth-badge">
-      <UTransition name="auth-badge" mode="out-in">
+      <Transition name="auth-badge" mode="out-in">
         <!-- 加载状态 -->
         <div v-if="status === 'loading'" key="loading" class="auth-badge-skeleton">
           <USkeleton class="h-10 w-10 rounded-full" />
@@ -14,23 +14,25 @@
         <!-- 已登录状态 -->
         <div v-else-if="user" key="user" class="auth-badge-user">
           <div class="flex items-center gap-3">
-            <!-- 头像 -->
-            <UAvatar
-              :src="null"
-              :initials="userInitial"
-              size="lg"
-              class="cursor-pointer"
+            <!-- 自定义头像 - 替代UAvatar组件 -->
+            <div
+              class="relative cursor-pointer"
               @click="toggleDropdown"
             >
+              <!-- 头像容器 -->
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-semibold text-sm transition-all duration-300 hover:scale-110 hover:shadow-md">
+                <!-- 默认头像图标 -->
+                <UIcon v-if="!user.avatar && userInitial === '?'" name="i-lucide-user" size="md" />
+                <!-- 用户名首字母 -->
+                <span v-else>{{ userInitial }}</span>
+              </div>
               <!-- 状态指示器 -->
-              <template #indicator>
-                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background"></div>
-              </template>
-            </UAvatar>
+              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-card transition-all duration-300 hover:scale-125"></div>
+            </div>
             
             <!-- 用户信息 -->
             <div class="space-y-0.5">
-              <span class="block text-sm font-medium text-foreground">
+              <span class="block text-sm font-semibold text-foreground transition-colors duration-300 hover:text-primary">
                 {{ user.username }}
               </span>
               <span class="block text-xs text-muted-foreground">
@@ -38,45 +40,27 @@
               </span>
             </div>
             
-            <!-- 退出按钮 -->
-            <UButton
-              variant="ghost"
-              color="danger"
-              size="sm"
+            <!-- 退出按钮 - 原生button -->
+            <button
               @click="onLogout"
-              class="ml-auto"
+              class="logout-button"
             >
-              <template #leading>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-              </template>
-              退出
-            </UButton>
+              <UIcon name="i-lucide-log-out" size="sm" />
+              <span class="ml-1">退出</span>
+            </button>
           </div>
         </div>
 
         <!-- 未登录状态 -->
         <div v-else key="login" class="auth-badge-login">
-          <NuxtLink to="/login">
-            <UButton
-              variant="primary"
-              size="sm"
-            >
-              <template #leading>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                  <polyline points="10 17 15 12 10 7"></polyline>
-                  <line x1="15" y1="12" x2="3" y2="12"></line>
-                </svg>
-              </template>
-              登录
-            </UButton>
+          <NuxtLink to="/login" class="login-link">
+            <button class="login-button">
+              <UIcon name="i-lucide-log-in" size="sm" />
+              <span class="ml-1">登录</span>
+            </button>
           </NuxtLink>
         </div>
-      </UTransition>
+      </Transition>
     </div>
     <template #fallback>
       <div class="auth-badge">
@@ -124,40 +108,150 @@ const onLogout = async () => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
 }
 
 .auth-badge-user {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: none;
   border-radius: 1rem;
   padding: 0.5rem 0.75rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .auth-badge-user:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent-primary);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  background: transparent;
+  border-color: transparent;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.auth-badge-login {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* 退出按钮样式 */
+.logout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 9999px;
+  color: rgba(239, 68, 68, 0.8);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  margin-left: auto;
+}
+
+.logout-button:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: rgba(239, 68, 68, 1);
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.logout-button:focus-visible {
+  outline: 2px solid rgba(239, 68, 68, 0.5);
+  outline-offset: 2px;
+}
+
+.logout-button:active {
+  transform: scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* 登录按钮样式 */
+.login-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.login-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  border: none;
+  border-radius: 9999px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.login-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+.login-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.login-button:active {
+  transform: scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* 头像样式优化 */
+.auth-badge-user .w-10.h-10 {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 状态指示器优化 */
+.auth-badge-user .absolute.bottom-0.right-0 {
+  z-index: 10;
+}
+
+/* 用户信息优化 */
+.auth-badge-user .text-sm.font-semibold {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.auth-badge-user .text-xs.text-muted-foreground {
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
 /* 过渡动画 */
 .auth-badge-enter-active,
 .auth-badge-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .auth-badge-enter-from {
   opacity: 0;
-  transform: scale(0.9) translateY(-4px);
+  transform: scale(0.9) translateY(-8px);
 }
 
 .auth-badge-leave-to {
   opacity: 0;
-  transform: scale(0.9) translateY(4px);
+  transform: scale(0.9) translateY(8px);
 }
 </style>

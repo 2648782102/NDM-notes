@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "framework": "nuxt",
+  "builds": [
+    {
+      "src": "./nuxt.config.ts",
+      "use": "@vercel/nuxt@latest"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

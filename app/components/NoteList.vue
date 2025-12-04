@@ -6,12 +6,9 @@
         <h2 class="note-list-heading">笔记分类</h2>
       </div>
       <button class="btn-primary btn-new-note" @click="$emit('new-note')">
-        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        新建笔记
-      </button>
+          <UIcon class="btn-icon" name="i-lucide-plus" size="sm" />
+          新建笔记
+        </button>
     </div>
 
     <div class="note-list-panel">
@@ -21,10 +18,7 @@
           :class="{ 'category-tag-active': !activeCategory }"
           @click="$emit('filter-change', null)"
         >
-          <svg class="category-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
+          <UIcon class="category-icon" name="i-lucide-layers" size="sm" />
           全部
         </button>
         <TransitionGroup name="category" tag="div" class="category-list">
@@ -35,10 +29,7 @@
             :class="{ 'category-tag-active': activeCategory === cat }"
             @click="$emit('filter-change', cat)"
           >
-            <svg class="category-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
-              <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
-            </svg>
+            <UIcon class="category-icon" name="i-lucide-folder" size="sm" />
             {{ cat }}
           </button>
         </TransitionGroup>
@@ -49,66 +40,68 @@
           <div v-for="i in 4" :key="i" class="note-skeleton" />
         </div>
 
-        <TransitionGroup
-          v-else
-          name="note-item"
-          tag="div"
-          class="note-list-items"
-        >
-          <button
-            v-for="note in filteredNotes"
-            :key="note.id"
-            class="note-item"
-            :class="{ 'note-item-active': currentId === note.id }"
-            @click="$emit('select', note.id)"
-            @mouseenter="hoveredNoteId = note.id"
-            @mouseleave="hoveredNoteId = null"
-          >
-            <div class="note-item-header">
-              <p class="note-item-title">
-                {{ note.title || '未命名笔记' }}
-              </p>
-              <span class="note-item-time">
-                {{ formatTime(note.updatedAt) }}
-              </span>
+        <div class="note-list-content-wrapper">
+          <!-- 使用v-if/v-else结构分离不同列表，避免TransitionGroup的move动画问题 -->
+          <Transition name="note-list" mode="out-in">
+            <div
+              v-if="filteredNotes.length"
+              :key="activeCategory || 'all'"
+              class="note-list-items"
+            >
+              <button
+                v-for="note in filteredNotes"
+                :key="note.id"
+                class="note-item"
+                :class="{ 'note-item-active': currentId === note.id }"
+                @click="$emit('select', note.id)"
+                @mouseenter="hoveredNoteId = note.id"
+                @mouseleave="hoveredNoteId = null"
+              >
+                <div class="note-item-header">
+                  <p class="note-item-title">
+                    {{ note.title || '未命名笔记' }}
+                  </p>
+                  <span class="note-item-time">
+                    {{ formatTime(note.updatedAt) }}
+                  </span>
+                </div>
+                <p class="note-item-preview">
+                  {{ note.content || '（暂无内容）' }}
+                </p>
+                <div class="note-item-tags">
+                  <span v-if="note.category" class="note-tag note-tag-category">
+                    {{ note.category }}
+                  </span>
+                  <TransitionGroup name="note-tag" tag="div" class="note-tags-list">
+                    <span
+                      v-for="tag in note.tags"
+                      :key="tag"
+                      class="note-tag"
+                    >
+                      # {{ tag }}
+                    </span>
+                  </TransitionGroup>
+                </div>
+                <!-- 悬停效果 - 平滑的阴影变化 -->
+                <div class="note-item-hover-effect" v-if="hoveredNoteId === note.id"></div>
+              </button>
             </div>
-            <p class="note-item-preview">
-              {{ note.content || '（暂无内容）' }}
-            </p>
-            <div class="note-item-tags">
-              <span v-if="note.category" class="note-tag note-tag-category">
-                {{ note.category }}
-              </span>
-              <TransitionGroup name="note-tag" tag="div" class="note-tags-list">
-                <span
-                  v-for="tag in note.tags"
-                  :key="tag"
-                  class="note-tag"
-                >
-                  # {{ tag }}
-                </span>
-              </TransitionGroup>
+          </Transition>
+          
+          <!-- 空状态单独处理，添加过渡效果 -->
+          <Transition name="note-empty" mode="out-in">
+            <div
+              v-if="!filteredNotes.length"
+              class="note-list-empty"
+              key="empty"
+            >
+              <div class="empty-state">
+                <UIcon class="empty-icon" name="i-lucide-file-text" size="2xl" />
+                <p class="empty-text">暂无笔记，点击右上角「新建笔记」开始记录吧～</p>
+              </div>
             </div>
-            <!-- 悬停效果 - 平滑的阴影变化 -->
-            <div class="note-item-hover-effect" v-if="hoveredNoteId === note.id"></div>
-          </button>
-
-          <div
-            v-if="!filteredNotes.length"
-            key="empty"
-            class="note-list-empty"
-          >
-            <div class="empty-state">
-              <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-              <p class="empty-text">暂无笔记，点击右上角「新建笔记」开始记录吧～</p>
-            </div>
-          </div>
-        </TransitionGroup>
+          </Transition>
+        </div>
       </div>
     </div>
   </div>
@@ -231,8 +224,7 @@ const formatTime = (iso: string) => {
   }
   
   .note-list-header {
-    padding: 0.75rem 0.875rem;
-    flex-wrap: wrap;
+    padding: 0.5rem 0.75rem;
     gap: 0.5rem;
   }
   
@@ -240,9 +232,25 @@ const formatTime = (iso: string) => {
     flex: 1 1 auto;
   }
   
+  .note-list-label {
+    font-size: 0.5625rem;
+    display: none; /* 移动端隐藏标签，减少冗余 */
+  }
+  
+  .note-list-heading {
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+  
+  /* 移动端隐藏整个note-list-header区域 */
+  .notes-mobile-layout .note-list-header {
+    display: none;
+  }
+  
   .btn-new-note {
-    flex: 1 1 auto;
-    justify-content: center;
+    height: 2rem;
+    padding: 0 0.875rem;
+    font-size: 0.75rem;
   }
   
   .note-list-content {
@@ -250,21 +258,27 @@ const formatTime = (iso: string) => {
   }
   
   .category-filter {
-    padding: 0.625rem 0.875rem;
-    gap: 0.375rem;
+    padding: 0.5rem 0.5rem 0.375rem;
+    gap: 0.25rem;
+  }
+  
+  /* 移动端隐藏header后，调整分类过滤器的上边距 */
+  .notes-mobile-layout .category-filter {
+    padding-top: 0.75rem;
   }
   
   .category-list {
-    gap: 0.375rem;
+    gap: 0.25rem;
   }
   
   .category-tag {
-    padding: 0.3125rem 0.75rem;
-    font-size: 0.7rem;
+    padding: 0.1875rem 0.5rem;
+    font-size: 0.625rem;
+    min-height: 1.5rem;
   }
   
   .note-item {
-    padding: 0.75rem;
+    padding: 0.625rem;
     gap: 0.25rem;
   }
   
@@ -370,28 +384,33 @@ const formatTime = (iso: string) => {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+/* 笔记列表头部 */
 .note-list-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.25rem;
-  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  gap: 0.5rem;
   background: var(--bg-secondary);
 }
 
 .note-list-title {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.125rem;
 }
 
 .note-list-label {
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--text-muted);
   transition: color 0.2s ease;
+  /* 在移动端隐藏标签，减少冗余 */
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .note-list-container:hover .note-list-label {
@@ -399,7 +418,7 @@ const formatTime = (iso: string) => {
 }
 
 .note-list-heading {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
   transition: color 0.2s ease;
@@ -803,44 +822,101 @@ const formatTime = (iso: string) => {
 
 /* 过渡动画 */
 
-/* 笔记项动画 */
-.note-item-enter-active,
+/* 笔记项动画 - 增强版 */
+.note-item-enter-active {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 .note-item-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease-out;
 }
 
 .note-item-enter-from {
   opacity: 0;
-  transform: translateY(10px) scale(0.95);
+  transform: translateY(20px) scale(0.95);
+  filter: blur(4px);
 }
 
 .note-item-leave-to {
   opacity: 0;
-  transform: translateY(-10px) scale(0.95);
+  transform: translateY(-20px) scale(0.95);
+  filter: blur(4px);
 }
 
+/* 移除move动画，避免单个笔记切换时的位置跳动 */
 .note-item-move {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: none;
 }
 
-/* 分类标签动画 */
+/* 空状态过渡效果 - 增强版 */
+.note-empty-enter-active,
+.note-empty-leave-active {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.note-empty-enter-from {
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+  filter: blur(6px);
+}
+
+.note-empty-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.9);
+  filter: blur(6px);
+}
+
+/* 整个笔记列表的过渡效果，用于分类切换 */
+.note-list-enter-active,
+.note-list-leave-active {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.note-list-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  filter: blur(4px);
+}
+
+.note-list-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.98);
+  filter: blur(4px);
+}
+
+/* 分类标签动画 - 增强版 */
 .category-enter-active,
 .category-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .category-enter-from {
   opacity: 0;
-  transform: scale(0.8) translateY(5px);
+  transform: scale(0.9) translateY(10px);
+  filter: blur(3px);
 }
 
 .category-leave-to {
   opacity: 0;
-  transform: scale(0.8) translateY(-5px);
+  transform: scale(0.9) translateY(-10px);
+  filter: blur(3px);
 }
 
 .category-move {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* 激活分类标签的颜色过渡 */
+.category-tag-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 优化笔记列表项的过渡效果，移除交错延迟以避免单个笔记位置跳动 */
+
+/* 笔记列表内容包装器 */
+.note-list-content-wrapper {
+  position: relative;
+  min-height: 200px;
 }
 
 /* 标签动画 */

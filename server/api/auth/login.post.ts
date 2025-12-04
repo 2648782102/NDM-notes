@@ -1,4 +1,4 @@
-import { readBody } from 'h3'
+import { readBody, createError } from 'h3'
 import { createSession } from '../../utils/session'
 import { verifyUser } from '../../utils/db'
 
