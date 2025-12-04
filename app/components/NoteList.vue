@@ -302,7 +302,7 @@ const formatTime = (iso: string) => {
 
 @media (max-width: 480px) {
   .note-list-content {
-    max-height: 25vh;
+    /* max-height: 25vh; */
   }
   
   .note-item {
@@ -329,6 +329,7 @@ const formatTime = (iso: string) => {
   .category-tag,
   .note-item {
     -webkit-tap-highlight-color: rgba(99, 102, 241, 0.2);
+    touch-action: manipulation;
   }
   
   /* 平滑滚动 */
@@ -341,12 +342,14 @@ const formatTime = (iso: string) => {
   /* 优化点击区域 */
   .btn-new-note,
   .category-tag {
-    min-height: 2rem;
+    min-height: 2.5rem;
   }
   
   /* 优化列表项触摸体验 */
   .note-item {
     cursor: pointer;
+    min-height: 2.5rem;
+    margin-bottom: 0.375rem;
   }
   
   /* 隐藏悬停效果 */

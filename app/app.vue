@@ -31,7 +31,13 @@
         </div>
 
         <!-- 主题切换按钮 -->
-        <button class="theme-toggle" @click="toggleTheme">
+        <UButton
+          size="icon"
+          variant="ghost"
+          color="gray"
+          @click="toggleTheme"
+          class="rounded-full"
+        >
           <svg v-if="currentTheme === 'dark'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -46,7 +52,7 @@
           <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
-        </button>
+        </UButton>
 
         <!-- 用户认证徽章 -->
         <AuthUserBadge />
@@ -59,17 +65,23 @@
     </main>
 
     <!-- 悬浮菜单按钮 -->
-    <button class="floating-menu-btn" @click="toggleMenu" :class="{ 'floating-menu-btn-open': isMenuOpen }">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-      </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close-icon">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
+        <UButton
+          size="icon"
+          variant="primary"
+          @click="toggleMenu"
+          :class="{ 'floating-menu-btn-open': isMenuOpen }"
+          class="floating-menu-btn rounded-full shadow-lg"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close-icon">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </UButton>
   </div>
 </template>
 
@@ -483,14 +495,53 @@ body {
   justify-content: center;
 }
 
-.floating-menu-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-xl), 0 12px 30px rgba(129, 140, 248, 0.4);
-}
-
 .floating-menu-btn-open {
   left: 290px;
   background: linear-gradient(135deg, var(--error-color), var(--warning-color));
+}
+
+/* PC端优化：部分隐藏，鼠标悬浮时滑出 */
+@media (min-width: 769px) {
+  .floating-menu-btn {
+    left: -2rem; /* 默认只露出右侧1rem */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .floating-menu-btn:hover {
+    left: 1rem; /* 鼠标悬浮时完全显示 */
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-xl), 0 12px 30px rgba(129, 140, 248, 0.4);
+  }
+  
+  /* 菜单打开时保持完全显示 */
+  .floating-menu-btn.floating-menu-btn-open {
+    left: 290px;
+  }
+  
+  /* 菜单打开时鼠标悬浮效果 */
+  .floating-menu-btn.floating-menu-btn-open:hover {
+    left: 290px;
+    transform: translateY(-1px);
+  }
+}
+
+/* 移动端优化：将悬浮菜单按钮移到右下角 */
+@media (max-width: 768px) {
+  .floating-menu-btn {
+    top: auto;
+    bottom: 1rem;
+    left: auto;
+    right: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  
+  /* 菜单打开时的位置调整 */
+  .floating-menu-btn-open {
+    left: auto;
+    right: 1rem;
+    bottom: 1rem;
+  }
 }
 
 /* 菜单图标动画 */
@@ -701,6 +752,7 @@ body {
     /* 优化动画效果 */
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(-100%);
+    z-index: 300;
   }
   
   .app-sidebar-open {
@@ -713,12 +765,42 @@ body {
     /* 添加半透明遮罩 */
     background: rgba(0, 0, 0, 0.5);
     pointer-events: none;
+    position: relative;
+  }
+  
+  /* 添加遮罩层 */
+  .app-main-expanded::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    pointer-events: auto;
   }
   
   /* 优化悬浮菜单按钮 */
   .floating-menu-btn-open {
     left: calc(85% + 10px);
     max-left: 290px;
+    z-index: 350;
+  }
+  
+  /* 优化Logo样式 */
+  .app-logo {
+    gap: 0.75rem;
+  }
+  
+  .app-logo-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .app-logo-title {
+    font-size: 1rem;
+  }
+  
+  .app-logo-subtitle {
+    font-size: 0.6875rem;
   }
 }
 

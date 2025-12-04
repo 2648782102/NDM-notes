@@ -10,7 +10,8 @@ export function useEditor() {
 
   const currentNoteId = ref<string | null>(null)
   const saving = ref(false)
-  const viewMode = ref<'edit' | 'preview' | 'split'>('preview')
+  const isEditing = ref(false) // 控制编辑模式
+  const viewMode = ref<'edit' | 'preview' | 'split'>('split')
 
   const syncFromNote = (note: Note | null) => {
     if (!note) {
@@ -19,13 +20,15 @@ export function useEditor() {
       editor.category = ''
       editor.tags = []
       currentNoteId.value = null
-      return
+    } else {
+      editor.title = note.title
+      editor.content = note.content
+      editor.category = note.category || ''
+      editor.tags = [...note.tags]
+      currentNoteId.value = note.id
     }
-    editor.title = note.title
-    editor.content = note.content
-    editor.category = note.category || ''
-    editor.tags = [...note.tags]
-    currentNoteId.value = note.id
+    // 同步笔记时退出编辑模式，进入预览模式
+    isEditing.value = false
   }
 
   const reset = (defaultCategory?: string) => {
@@ -34,6 +37,8 @@ export function useEditor() {
     editor.category = defaultCategory || ''
     editor.tags = []
     currentNoteId.value = null
+    // 创建新笔记时退出编辑模式，进入预览模式
+    isEditing.value = false
   }
 
   const addTag = (tag: string) => {
@@ -54,6 +59,7 @@ export function useEditor() {
     editor,
     currentNoteId,
     saving,
+    isEditing,
     viewMode,
     syncFromNote,
     reset,

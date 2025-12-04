@@ -17,10 +17,12 @@
         :editor="editor.editor"
         :current-note-id="editor.currentNoteId.value"
         :saving="editor.saving.value"
+        :is-editing="editor.isEditing.value"
         @save="handleSave"
         @delete="handleDelete"
         @tag-add="handleAddTag"
         @tag-remove="handleRemoveTag"
+        @update:is-editing="editor.isEditing.value = $event"
       />
     </div>
     
@@ -68,26 +70,28 @@
             </button>
             <h2 class="mobile-editor-title">{{ editor.editor.title || '新建笔记' }}</h2>
             <div class="mobile-editor-actions">
-              <!-- 保存按钮 - 只在编辑或分屏模式下显示 -->
-              <button
-                v-if="editor.viewMode === 'edit' || editor.viewMode === 'split'"
-                class="btn-primary btn-save-mobile"
-                :disabled="editor.saving"
-                @click="handleSaveMobile"
-                title="保存笔记"
-              >
-                <span v-if="editor.saving" class="spinner-small"></span>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-              </button>
-              <!-- 删除按钮 - 只在编辑或分屏模式下显示 -->
-              <button
-                v-if="editor.currentNoteId && (editor.viewMode === 'edit' || editor.viewMode === 'split')"
-                class="btn-danger btn-delete-mobile"
-                @click="handleDeleteMobile"
-                title="删除笔记"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-              </button>
+              <!-- 保存和删除按钮只在编辑模式下显示 -->
+              <template v-if="editor.isEditing">
+                <!-- 保存按钮 -->
+                <button
+                  class="btn-primary btn-save-mobile"
+                  :disabled="editor.saving.value"
+                  @click="handleSaveMobile"
+                  title="保存笔记"
+                >
+                  <span v-if="editor.saving.value" class="spinner-small"></span>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                </button>
+                <!-- 删除按钮 -->
+                <button
+                  v-if="editor.currentNoteId"
+                  class="btn-danger btn-delete-mobile"
+                  @click="handleDeleteMobile"
+                  title="删除笔记"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
+              </template>
             </div>
           </div>
           
@@ -97,10 +101,12 @@
               :editor="editor.editor"
               :current-note-id="editor.currentNoteId.value"
               :saving="editor.saving.value"
+              :is-editing="editor.isEditing.value"
               @save="handleSaveMobile"
               @delete="handleDeleteMobile"
               @tag-add="handleAddTag"
               @tag-remove="handleRemoveTag"
+              @update:is-editing="editor.isEditing.value = $event"
             />
           </div>
         </div>
@@ -130,16 +136,24 @@ const handleFilterChange = (category: string | null) => {
   activeCategory.value = category
 }
 
-const handleSelectNote = (id: string) => {
-  const note = getNoteById(id)
-  editor.syncFromNote(note || null)
-}
+const handleSelectNote = async (id: string) => {
+    const note = getNoteById(id)
+    // 切换笔记前自动保存当前笔记
+    await saveNote()
+    // 切换笔记前退出编辑模式
+    editor.isEditing.value = false
+    editor.syncFromNote(note || null)
+  }
 
-const handleSelectNoteMobile = (id: string) => {
-  const note = getNoteById(id)
-  editor.syncFromNote(note || null)
-  isMobileEditorOpen.value = true
-}
+  const handleSelectNoteMobile = async (id: string) => {
+    const note = getNoteById(id)
+    // 切换笔记前自动保存当前笔记
+    await saveNote()
+    // 切换笔记前退出编辑模式
+    editor.isEditing.value = false
+    editor.syncFromNote(note || null)
+    isMobileEditorOpen.value = true
+  }
 
 const handleAddTag = (tag: string) => {
   editor.addTag(tag)
@@ -158,25 +172,31 @@ const handleSaveMobile = async () => {
 }
 
 const saveNote = async () => {
-  editor.saving.value = true
-  try {
-    const payload = {
-      title: editor.editor.title,
-      content: editor.editor.content,
-      category: editor.editor.category || null,
-      tags: editor.editor.tags
-    }
+    editor.saving.value = true
+    try {
+      const payload = {
+        title: editor.editor.title,
+        content: editor.editor.content,
+        category: editor.editor.category || null,
+        tags: editor.editor.tags
+      }
 
-    if (editor.currentNoteId.value) {
-      await updateNote(editor.currentNoteId.value, payload)
-    } else {
-      const created = await createNote(payload)
-      editor.currentNoteId.value = created.id
+      if (editor.currentNoteId.value) {
+        await updateNote(editor.currentNoteId.value, payload)
+      } else {
+        const created = await createNote(payload)
+        editor.currentNoteId.value = created.id
+      }
+      // 保存成功后退出编辑模式，恢复预览模式
+      editor.isEditing.value = false
+      // 保存成功后自动关闭移动端编辑器，返回列表页
+      if (isMobileEditorOpen.value) {
+        isMobileEditorOpen.value = false
+      }
+    } finally {
+      editor.saving.value = false
     }
-  } finally {
-    editor.saving.value = false
   }
-}
 
 const handleDelete = async () => {
   await deleteNoteAction()
@@ -190,8 +210,23 @@ const handleDeleteMobile = async () => {
 const deleteNoteAction = async () => {
   if (!editor.currentNoteId.value) return
   const id = editor.currentNoteId.value
+  
+  // 获取当前笔记在数组中的索引
+  const currentIndex = notes.value.findIndex(note => note.id === id)
   await deleteNote(id)
-  editor.reset(activeCategory.value || undefined)
+  
+  // 删除后自动切换到下一个可用笔记
+  if (notes.value.length > 0) {
+    // 如果有下一个笔记，切换到下一个
+    // 如果没有下一个笔记但有前一个笔记，切换到前一个
+    // 否则切换到第一个笔记
+    const nextIndex = currentIndex < notes.value.length ? currentIndex : Math.max(0, currentIndex - 1)
+    const nextNote = notes.value[nextIndex]
+    editor.syncFromNote(nextNote)
+  } else {
+    // 如果没有笔记了，清空编辑器状态
+    editor.syncFromNote(null)
+  }
 }
 
 const closeMobileEditor = () => {
@@ -354,6 +389,9 @@ onMounted(async () => {
   border-top: 1px solid rgba(51, 65, 85, 0.8);
   backdrop-filter: blur(12px);
   z-index: 1001;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  /* 增强底部操作栏的视觉层次 */
+  border-radius: 1rem 1rem 0 0;
 }
 
 /* 移动端编辑内容区域 - 占据全屏除底部按钮栏 */
