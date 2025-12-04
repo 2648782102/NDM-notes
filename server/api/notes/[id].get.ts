@@ -1,5 +1,6 @@
 import { requireUser } from '../../utils/session'
 import { getNoteById } from '../../utils/db'
+import { createError } from 'h3'
 
 export default defineEventHandler((event) => {
   const user = requireUser(event)

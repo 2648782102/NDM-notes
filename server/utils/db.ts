@@ -1,12 +1,9 @@
 import { randomUUID, createHash } from 'node:crypto'
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
-import { join } from 'node:path'
 
-// 数据文件路径
-const DATA_DIR = join(process.cwd(), '.data')
-const USERS_FILE = join(DATA_DIR, 'users.json')
-const NOTES_FILE = join(DATA_DIR, 'notes.json')
+// 检查是否在 Vercel 环境中
+const isVercel = process.env.VERCEL === '1'
 
+// 使用内存存储代替文件系统存储，适用于 Vercel 无服务器环境
 export interface UserRecord {
   id: string
   username: string
@@ -24,45 +21,13 @@ export interface NoteRecord {
   updatedAt: string
 }
 
-// 确保数据目录存在
-function ensureDataDir() {
-  if (!existsSync(DATA_DIR)) {
-    // 创建目录，使用递归模式
-    mkdirSync(DATA_DIR, { recursive: true })
-  }
-}
-
-// 读取数据文件
-function readDataFile<T>(filePath: string, defaultValue: T): T {
-  ensureDataDir()
-  if (!existsSync(filePath)) {
-    return defaultValue
-  }
-  try {
-    const content = readFileSync(filePath, 'utf-8')
-    return JSON.parse(content) as T
-  } catch {
-    return defaultValue
-  }
-}
-
-// 保存数据文件
-function saveDataFile<T>(filePath: string, data: T) {
-  ensureDataDir()
-  writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
-}
-
 function hashPassword(raw: string) {
   return createHash('sha256').update(raw).digest('hex')
 }
 
-// 从文件加载数据
-const usersData = readDataFile<Record<string, UserRecord>>(USERS_FILE, {})
-const notesData = readDataFile<Record<string, NoteRecord>>(NOTES_FILE, {})
-
-// 转换为 Map 进行操作
-const users = new Map<string, UserRecord>(Object.entries(usersData))
-const notes = new Map<string, NoteRecord>(Object.entries(notesData))
+// 初始化内存存储
+const users = new Map<string, UserRecord>()
+const notes = new Map<string, NoteRecord>()
 
 // 如果没有数据，初始化示例数据
 if (users.size === 0) {
@@ -104,11 +69,10 @@ if (users.size === 0) {
       updatedAt: now
     })
   })
-  
-  // 保存初始化数据
-  saveDataFile(USERS_FILE, Object.fromEntries(users))
-  saveDataFile(NOTES_FILE, Object.fromEntries(notes))
 }
+
+// 导入 createError 函数
+import { createError } from 'h3'
 
 export function createUser(username: string, password: string): UserRecord {
   const existing = users.get(username)
@@ -125,8 +89,6 @@ export function createUser(username: string, password: string): UserRecord {
     passwordHash: hashPassword(password)
   }
   users.set(username, record)
-  // 保存到文件
-  saveDataFile(USERS_FILE, Object.fromEntries(users))
   return record
 }
 
@@ -174,8 +136,6 @@ export function createNote(
     updatedAt: now
   }
   notes.set(id, note)
-  // 保存到文件
-  saveDataFile(NOTES_FILE, Object.fromEntries(notes))
   return note
 }
 
@@ -198,8 +158,6 @@ export function updateNote(
     updatedAt: new Date().toISOString()
   }
   notes.set(id, updated)
-  // 保存到文件
-  saveDataFile(NOTES_FILE, Object.fromEntries(notes))
   return updated
 }
 
@@ -212,8 +170,6 @@ export function deleteNote(id: string, userId: string) {
     })
   }
   notes.delete(id)
-  // 保存到文件
-  saveDataFile(NOTES_FILE, Object.fromEntries(notes))
 }
 
 export function listCategoriesByUser(userId: string): string[] {

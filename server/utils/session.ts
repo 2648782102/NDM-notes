@@ -88,10 +88,10 @@ export function destroySession(event: H3Event) {
 export function requireUser(event: H3Event): SessionUser {
   const user = getSessionUser(event)
   if (!user) {
-  throw createError({
-    statusCode: 401,
-    message: '未认证用户'
-  })
-}
+    throw createError({
+      statusCode: 401,
+      message: '未认证用户'
+    })
+  }
   return user
 }
