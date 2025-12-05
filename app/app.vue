@@ -102,13 +102,17 @@ const config = useRuntimeConfig()
 // 主题切换功能
 const currentTheme = useCookie<string>('theme', { default: () => 'dark' })
 
+// 使用 useHead 在 SSR 时就应用主题类
+useHead({
+  htmlAttrs: {
+    class: currentTheme.value === 'dark' ? 'dark' : ''
+  }
+})
+
 const toggleTheme = () => {
   currentTheme.value = currentTheme.value === 'dark' ? 'light' : 'dark'
-  updateTheme()
-}
-
-const updateTheme = () => {
-  // 只在客户端执行，因为服务器端没有 document 对象
+  
+  // 客户端更新主题类
   if (process.client) {
     if (currentTheme.value === 'dark') {
       document.documentElement.classList.add('dark')
@@ -116,11 +120,6 @@ const updateTheme = () => {
       document.documentElement.classList.remove('dark')
     }
   }
-}
-
-// 初始化主题 - 只在客户端执行
-if (process.client) {
-  updateTheme()
 }
 
 const onLogoClick = () => {
