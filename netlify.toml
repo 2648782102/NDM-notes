@@ -7,9 +7,7 @@
   # 构建输出目录
   publish = "./dist"
   # 环境变量
-  environment = {
-    NODE_VERSION = "20"
-  }
+  environment = { NODE_VERSION = "20" }
 
 # 重定向规则 - 解决 SPA 路由问题
 [[redirects]]
@@ -50,11 +48,6 @@
 # 部署前钩子
 [build.processing]
   # 自动压缩
-  minify = {
-    css = true
-    js = true
-  }
+  minify = { css = true, js = true }
   # 生成摘要文件
-  html = {
-    pretty_urls = true
-  }
+  html = { pretty_urls = true }
