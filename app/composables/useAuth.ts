@@ -27,11 +27,9 @@ export function useAuth() {
   const fetchMe = async () => {
     // 如果已经在加载中，避免重复调用
     if (status.value === 'loading') {
-      console.log('useAuth: Already loading, skipping fetchMe')
       return
     }
     
-    console.log('useAuth: Starting fetchMe')
     status.value = 'loading'
     try {
       const data = await $fetch<AuthUser | null>('/api/auth/me', {
@@ -40,11 +38,10 @@ export function useAuth() {
           'Content-Type': 'application/json'
         }
       })
-      console.log('useAuth: fetchMe succeeded, user:', data)
       user.value = data ?? null
       status.value = user.value ? 'authenticated' : 'idle'
     } catch (error) {
-      console.error('useAuth: fetchMe failed:', error)
+      console.error('Authentication check failed:', error)
       user.value = null
       status.value = 'idle'
     }
@@ -61,13 +58,11 @@ export function useAuth() {
           'Content-Type': 'application/json'
         }
       })
-      console.log('useAuth: Login succeeded, user data:', data)
       // 直接设置用户状态，不依赖 cookie
       user.value = data
       status.value = 'authenticated'
       return data
     } catch (error: any) {
-      console.error('useAuth: Login failed:', error)
       status.value = 'idle'
       // 确保错误对象有 message 属性
       if (error instanceof Error) {
@@ -100,11 +95,9 @@ export function useAuth() {
   // 在客户端加载时，如果有 localStorage 中的用户信息，直接设置为已认证状态
   // 这样即使刷新页面，用户也不会被重定向到登录页面
   if (process.client && initialUser) {
-    console.log('useAuth: Restored user from localStorage:', initialUser)
     user.value = initialUser
     status.value = 'authenticated'
   } else if (process.client && status.value === 'idle' && !user.value) {
-    console.log('useAuth: No user in localStorage, calling fetchMe')
     fetchMe()
   }
 

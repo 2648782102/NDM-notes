@@ -5,8 +5,11 @@ export default defineNuxtConfig({
     enabled: false // 生产环境禁用 devtools
   },
 
-  // Font Awesome 配置
-  css: ['@fortawesome/fontawesome-svg-core/styles.css'],
+  // 全局 CSS 配置
+  css: [
+    '@fortawesome/fontawesome-svg-core/styles.css',
+    '~/assets/styles/app.scss'
+  ],
 
   // Nitro 配置，解决 Netlify 部署问题
   nitro: {

@@ -1,5 +1,27 @@
 <template>
   <div class="notes-page">
+    <!-- 错误提示 -->
+    <div v-if="notesError" class="error-message">
+      <div class="error-content">
+        <FontAwesomeIcon icon="exclamation-circle" size="lg" class="error-icon" />
+        <span class="error-text">{{ notesError }}</span>
+        <button class="error-close" @click="clearNotesError">
+          <FontAwesomeIcon icon="xmark" size="sm" />
+        </button>
+      </div>
+    </div>
+    
+    <!-- 自定义确认弹窗 -->
+    <CustomConfirm
+      :is-visible="isConfirmVisible"
+      title="保存确认"
+      message="当前笔记有未保存的修改，是否保存？点击'取消'将放弃修改。"
+      confirm-text="保存"
+      cancel-text="取消"
+      @confirm="handleConfirm"
+      @cancel="handleCancel"
+    />
+
     <!-- 桌面端：水平布局 -->
     <div class="notes-desktop-layout">
       <NoteList
@@ -110,12 +132,18 @@
 </template>
 
 <script setup lang="ts">
+import CustomConfirm from './../components/CustomConfirm.vue'
+
 const { user, status: authStatus } = useAuth()
-const { notes, categories, loading: notesLoading, loadNotes, loadCategories, createNote, updateNote, deleteNote, getNoteById } = useNotes()
+const { notes, categories, loading: notesLoading, error: notesError, clearError: clearNotesError, loadNotes, loadCategories, createNote, updateNote, deleteNote, getNoteById } = useNotes()
 const editor = useEditor()
 
 const activeCategory = ref<string | null>(null)
 const isMobileEditorOpen = ref(false)
+
+// 自定义确认弹窗状态
+const isConfirmVisible = ref(false)
+const confirmPromise = ref<{ resolve: (value: boolean) => void } | null>(null)
 
 const handleNewNote = () => {
   editor.reset(activeCategory.value || undefined)
@@ -130,24 +158,73 @@ const handleFilterChange = (category: string | null) => {
   activeCategory.value = category
 }
 
-const handleSelectNote = async (id: string) => {
-    const note = getNoteById(id)
-    // 切换笔记前自动保存当前笔记
+// 自定义确认弹窗的Promise封装
+const showCustomConfirm = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    isConfirmVisible.value = true
+    confirmPromise.value = { resolve }
+  })
+}
+
+// 处理确认按钮点击
+const handleConfirm = () => {
+  isConfirmVisible.value = false
+  if (confirmPromise.value) {
+    confirmPromise.value.resolve(true)
+    confirmPromise.value = null
+  }
+}
+
+// 处理取消按钮点击
+const handleCancel = () => {
+  isConfirmVisible.value = false
+  if (confirmPromise.value) {
+    confirmPromise.value.resolve(false)
+    confirmPromise.value = null
+  }
+}
+
+// 检查是否可以切换笔记，如果有未保存的修改，给出提示
+const canSwitchNote = async () => {
+  // 如果内容没有变化，直接返回true
+  if (!editor.isDirty.value) {
+    return true
+  }
+  
+  // 询问用户是否保存修改
+  const confirmSave = await showCustomConfirm()
+  
+  if (confirmSave) {
+    // 如果用户选择保存，调用saveNote函数
     await saveNote()
+  }
+  
+  // 无论用户选择保存还是取消，都允许切换笔记
+  return true
+}
+
+const handleSelectNote = async (id: string) => {
+  const note = getNoteById(id)
+  
+  // 检查是否可以切换笔记
+  if (await canSwitchNote()) {
     // 切换笔记前退出编辑模式
     editor.isEditing.value = false
     editor.syncFromNote(note || null)
   }
+}
 
-  const handleSelectNoteMobile = async (id: string) => {
-    const note = getNoteById(id)
-    // 切换笔记前自动保存当前笔记
-    await saveNote()
+const handleSelectNoteMobile = async (id: string) => {
+  const note = getNoteById(id)
+  
+  // 检查是否可以切换笔记
+  if (await canSwitchNote()) {
     // 切换笔记前退出编辑模式
     editor.isEditing.value = false
     editor.syncFromNote(note || null)
     isMobileEditorOpen.value = true
   }
+}
 
 const handleAddTag = (tag: string) => {
   editor.addTag(tag)
@@ -174,6 +251,15 @@ const saveNote = async () => {
         category: editor.editor.category || null,
         tags: editor.editor.tags
       }
+      
+      // 检查内容是否为空（标题和内容都为空，且没有标签）
+      const isEmptyContent = !payload.title.trim() && !payload.content.trim() && payload.tags.length === 0
+      
+      // 如果是新建笔记且内容为空，不保存
+      if (!editor.currentNoteId.value && isEmptyContent) {
+        console.log('笔记内容为空，不保存')
+        return
+      }
 
       if (editor.currentNoteId.value) {
         await updateNote(editor.currentNoteId.value, payload)
@@ -181,6 +267,9 @@ const saveNote = async () => {
         const created = await createNote(payload)
         editor.currentNoteId.value = created.id
       }
+      
+      // 保存成功后更新编辑器状态
+      editor.saveEditorState()
       // 保存成功后退出编辑模式，恢复预览模式
       editor.isEditing.value = false
       // 保存成功后自动关闭移动端编辑器，返回列表页
@@ -223,8 +312,11 @@ const deleteNoteAction = async () => {
   }
 }
 
-const closeMobileEditor = () => {
-  isMobileEditorOpen.value = false
+const closeMobileEditor = async () => {
+  // 检查是否可以关闭编辑器，如果有未保存的修改，给出提示
+  if (await canSwitchNote()) {
+    isMobileEditorOpen.value = false
+  }
 }
 
 onMounted(async () => {
@@ -241,15 +333,88 @@ onMounted(async () => {
 
   if (user.value) {
     await Promise.all([loadNotes(), loadCategories()])
-    const first = notes.value[0]
-    if (first) {
-      editor.syncFromNote(first)
+    
+    // 检查URL参数，判断是否需要创建新笔记
+    const route = useRoute()
+    const isNewNote = route.query.new === 'true'
+    
+    if (isNewNote) {
+      // 创建新笔记
+      handleNewNote()
+    } else {
+      // 否则显示第一个笔记
+      const first = notes.value[0]
+      if (first) {
+        editor.syncFromNote(first)
+      }
     }
   }
 })
 </script>
 
 <style scoped>
+/* 错误提示样式 */
+.error-message {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 600px;
+  background: linear-gradient(135deg, var(--error-color), #dc2626);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 0.875rem 1.25rem;
+  box-shadow: var(--shadow-xl);
+  animation: slideDown 0.3s ease-out;
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.error-icon {
+  color: #fef3c7;
+  flex-shrink: 0;
+}
+
+.error-text {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.error-close {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.error-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* 主页面布局 - 无滚动条设计 */
 .notes-page {
   display: flex;

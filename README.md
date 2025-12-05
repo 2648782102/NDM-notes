@@ -1,131 +1,199 @@
-## NDM Notes - 现代化全栈笔记应用
+# NDM Notes
 
-一个使用 **Nuxt 4 + TypeScript + TailwindCSS** 构建的现代化、高性能笔记应用，提供流畅的跨平台体验。
+现代化动画笔记应用，基于 Nuxt 全栈实现。
 
-### 🎯 项目优势
+## 功能特点
 
-- **全栈一体化**：基于 Nuxt 4 构建，前后端代码统一管理，开发效率提升
-- **现代化 UI**：采用玻璃拟态设计风格，搭配流畅的动画效果，视觉体验出色
-- **移动端优化**：针对移动设备进行了深度优化，包括性能、布局和交互
-- **Markdown 支持**：内置功能丰富的 Markdown 编辑器，支持实时预览
-- **响应式设计**：完美适配各种屏幕尺寸，从手机到桌面设备
-- **类型安全**：使用 TypeScript 确保代码质量和可维护性
-- **高性能**：优化的渲染和动画，确保流畅的用户体验
+- ✨ **现代化 UI 设计**：采用玻璃态设计风格，支持浅色/暗色主题切换
+- 📝 **Markdown 编辑器**：支持丰富的 Markdown 语法，实时预览
+- 📋 **笔记管理**：创建、编辑、删除、分类笔记
+- 🏷️ **标签系统**：为笔记添加标签，方便分类和搜索
+- 🔍 **分类筛选**：按分类快速筛选笔记
+- 💾 **自动保存**：编辑内容自动保存，避免数据丢失
+- 📱 **响应式设计**：完美适配桌面端和移动端
+- 🔐 **用户认证**：安全的用户名密码认证系统
+- 🎨 **流畅动画**：精心设计的过渡动画效果
 
-### 📱 移动端特性
+## 技术栈
 
-- 底部操作栏，便于单手操作
-- 优化的触摸区域，提升交互体验
-- 流畅的滚动和动画效果
-- 键盘遮挡自动处理
-- 响应式布局，适配各种屏幕尺寸
+- **框架**：Nuxt 4
+- **前端**：Vue 3, TypeScript, SCSS
+- **UI 组件**：Font Awesome 图标
+- **Markdown 解析**：marked, highlight.js
+- **状态管理**：Vue Composition API
+- **构建工具**：Vite
+- **包管理器**：Yarn
 
-### 📸 应用截图
+## 安装步骤
 
-<!-- 预留图片位置 -->
-| 桌面端 | 移动端 |
-|--------|--------|
-| ![桌面端截图](https://example.com/desktop-screenshot.png) | ![移动端截图](https://example.com/mobile-screenshot.png) |
-| ![编辑器截图](https://example.com/editor-screenshot.png) | ![笔记列表截图](https://example.com/notes-list-screenshot.png) |
+### 环境要求
 
-### ✨ 核心功能
+- Node.js 18.x 或更高版本
+- Yarn 4.x
 
-- **身份认证**：支持注册 / 登录 / 退出，基于服务端 session + HTTP-only Cookie
-- **笔记管理**：笔记列表、创建、编辑、删除
-- **分类与标签**：按分类筛选、支持为笔记添加多个标签
-- **Markdown 编辑器**：支持实时预览、分屏编辑、工具栏快捷操作
-- **现代化 UI**：玻璃拟态风格、细腻过渡和列表动画
-- **主题切换**：支持明暗主题切换
-
-> 注意：当前项目使用 **内存数据存储**（Map），仅用于演示。重启 dev 服务器后数据会清空。后续可替换为数据库（如 PostgreSQL / MySQL / MongoDB / Prisma 等）。
-
-### 🚀 快速开始
-
-#### 内置演示账号
-**用户名 `demo` / 密码 `demo123`**
-
-#### 安装依赖
+### 安装依赖
 
 ```bash
-# 建议使用 yarn，已提供 yarn.lock
+# 安装依赖
 yarn install
 ```
 
-#### 启动开发环境
+### 开发模式
 
 ```bash
+# 启动开发服务器
 yarn dev
 ```
 
-启动后访问：`http://localhost:3000`
+应用将在 `http://localhost:3000` 启动。
 
-#### 生产构建
+### 生产构建
 
 ```bash
+# 构建生产版本
 yarn build
+
+# 预览生产构建
 yarn preview
 ```
 
-更多部署说明可参考 Nuxt 官方文档（Deployment 部分）。
-
-### 🛠️ 技术栈
-
-- **前端框架**：Vue 3 + Nuxt 4
-- **开发语言**：TypeScript
-- **样式框架**：TailwindCSS + SCSS
-- **Markdown 解析**：marked + highlight.js
-- **构建工具**：Vite
-- **部署方案**：Nitro
-
-### 📁 项目结构
+## 项目结构
 
 ```
-├── app/                  # 应用源码
-│   ├── components/       # Vue 组件
-│   ├── composables/      # 组合式 API
-│   ├── middleware/       # 中间件
+├── app/                  # 应用代码
+│   ├── components/        # Vue 组件
+│   ├── composables/       # 组合式函数
+│   ├── middleware/        # 中间件
 │   ├── pages/            # 页面组件
-│   └── app.vue           # 根组件
+│   ├── plugins/           # 插件
+│   └── app.vue            # 根组件
 ├── assets/               # 静态资源
-├── locales/              # 国际化文件
-├── public/               # 公共资源
+│   └── styles/           # 样式文件
+├── public/               # 公共静态文件
 ├── server/               # 服务端代码
 │   ├── api/              # API 路由
 │   └── utils/            # 工具函数
 ├── nuxt.config.ts        # Nuxt 配置
-├── tailwind.config.mjs   # Tailwind 配置
+├── package.json          # 项目配置
 └── tsconfig.json         # TypeScript 配置
 ```
 
-### 🎨 设计特点
+## 核心组件
 
-- **玻璃拟态风格**：半透明背景 + 模糊效果
-- **流畅动画**：元素过渡、悬停效果、列表动画
-- **响应式设计**：移动端优先，适配各种屏幕
-- **深色主题**：支持明暗主题切换
-- **直观交互**：清晰的视觉层次和操作反馈
+### NoteEditor
 
-### 📝 开发说明
+Markdown 编辑器组件，支持：
+- 实时预览
+- 工具栏快捷操作
+- 代码高亮
+- 表格、列表、引用等 Markdown 语法
+- 标签和分类管理
 
-- 本项目使用 **Nuxt 4**，请确保 Node.js 版本 >= 20
-- 建议使用 **VS Code** 作为开发工具，并安装推荐插件
-- 代码遵循 ESLint 和 Prettier 规范
+### NoteList
 
-### 🔗 相关链接
+笔记列表组件，支持：
+- 笔记卡片展示
+- 分类筛选
+- 新建笔记
+- 笔记选择
 
-- [Nuxt 官方文档](https://nuxt.com/docs)
-- [Vue 3 官方文档](https://vuejs.org/guide/introduction.html)
-- [TailwindCSS 官方文档](https://tailwindcss.com/docs)
-- [TypeScript 官方文档](https://www.typescriptlang.org/docs/)
+### AuthUserBadge
 
-### 📄 许可证
+用户认证徽章，显示当前登录用户信息。
+
+## 组合式函数
+
+### useNotes
+
+管理笔记数据，提供：
+- 笔记列表获取
+- 分类获取
+- 笔记创建、更新、删除
+- 错误处理
+
+### useEditor
+
+编辑器状态管理，提供：
+- 编辑器状态同步
+- 自动保存
+- 编辑模式切换
+- 标签管理
+
+### useAuth
+
+用户认证管理，提供：
+- 登录/登出
+- 用户信息获取
+
+## API 接口
+
+### 认证相关
+
+- `POST /api/auth/login` - 用户登录
+- `POST /api/auth/logout` - 用户登出
+- `GET /api/auth/me` - 获取当前用户信息
+
+### 笔记相关
+
+- `GET /api/notes` - 获取笔记列表
+- `POST /api/notes` - 创建笔记
+- `GET /api/notes/:id` - 获取单个笔记
+- `PUT /api/notes/:id` - 更新笔记
+- `DELETE /api/notes/:id` - 删除笔记
+- `GET /api/categories` - 获取分类列表
+
+## 主题配置
+
+应用支持浅色/暗色主题切换，主题配置位于 `assets/styles/app.scss`。
+
+## 部署
+
+### Netlify 部署
+
+项目已配置 Netlify 部署，使用 Nitro 预设。
+
+### 环境变量
+
+- `AUTH_SECRET` - 认证密钥
+- `APP_NAME` - 应用名称
+
+## 开发规范
+
+- 使用 TypeScript 编写代码
+- 组件采用 Composition API
+- 样式使用 SCSS
+- 遵循 ESLint 和 Prettier 规范
+
+## 许可证
 
 MIT License
 
-### 🤝 贡献
+## 贡献
 
 欢迎提交 Issue 和 Pull Request！
 
----
+## 演示账号
 
-**NDM Notes** - 现代化全栈笔记应用，为您提供流畅的笔记体验！ 🚀
+- 用户名: demo
+- 密码: demo123
+
+## 浏览器支持
+
+- Chrome (推荐)
+- Firefox
+- Safari
+- Edge
+
+## 更新日志
+
+### v1.0.0
+
+- 初始版本发布
+- 实现基本的笔记管理功能
+- 支持 Markdown 编辑
+- 实现用户认证
+- 响应式设计
+
+## 作者
+
+NDM Notes 团队

@@ -18,7 +18,7 @@
           :class="{ 'category-tag-active': !activeCategory }"
           @click="$emit('filter-change', null)"
         >
-          <FontAwesomeIcon class="category-icon" icon="layers" size="sm" />
+          <FontAwesomeIcon class="category-icon" icon="folder" size="sm" />
           全部
         </button>
         <TransitionGroup name="category" tag="div" class="category-list">
@@ -51,6 +51,7 @@
               <button
                 v-for="note in filteredNotes"
                 :key="note.id"
+                v-memo="[note.id, note.title, note.content, note.category, note.tags, note.updatedAt, currentId, hoveredNoteId]"
                 class="note-item"
                 :class="{ 'note-item-active': currentId === note.id }"
                 @click="$emit('select', note.id)"
@@ -76,6 +77,7 @@
                     <span
                       v-for="tag in note.tags"
                       :key="tag"
+                      v-memo="[tag]"
                       class="note-tag"
                     >
                       # {{ tag }}

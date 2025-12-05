@@ -23,10 +23,13 @@
               v-model="username"
               type="text"
               class="form-input"
+              :class="{ 'form-input-error': errors.username }"
               placeholder="请输入用户名"
               required
               autofocus
+              @input="validateUsername"
             />
+            <span v-if="errors.username" class="form-error">{{ errors.username }}</span>
           </div>
 
           <div class="form-group">
@@ -36,16 +39,19 @@
               v-model="password"
               type="password"
               class="form-input"
+              :class="{ 'form-input-error': errors.password }"
               placeholder="请输入密码"
               required
+              @input="validatePassword"
             />
+            <span v-if="errors.password" class="form-error">{{ errors.password }}</span>
           </div>
 
           <div class="form-actions">
             <button
               type="submit"
               class="btn-primary login-btn"
-              :disabled="loggingIn"
+              :disabled="loggingIn || !isFormValid"
             >
               <span v-if="loggingIn" class="spinner"></span>
               <span>{{ loggingIn ? '登录中...' : '登录' }}</span>
@@ -70,6 +76,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+
 const config = useRuntimeConfig()
 const router = useRouter()
 
@@ -78,11 +86,55 @@ const password = ref('')
 const loggingIn = ref(false)
 const error = ref('')
 
+// 表单验证错误
+const errors = ref({
+  username: '',
+  password: ''
+})
+
 const { login } = useAuth()
+
+// 验证用户名
+const validateUsername = () => {
+  if (!username.value.trim()) {
+    errors.value.username = '用户名不能为空'
+  } else if (username.value.length < 3) {
+    errors.value.username = '用户名长度不能少于3个字符'
+  } else if (username.value.length > 20) {
+    errors.value.username = '用户名长度不能超过20个字符'
+  } else {
+    errors.value.username = ''
+  }
+}
+
+// 验证密码
+const validatePassword = () => {
+  if (!password.value) {
+    errors.value.password = '密码不能为空'
+  } else if (password.value.length < 6) {
+    errors.value.password = '密码长度不能少于6个字符'
+  } else {
+    errors.value.password = ''
+  }
+}
+
+// 表单是否有效
+const isFormValid = computed(() => {
+  return !errors.value.username && !errors.value.password && username.value.trim() && password.value
+})
 
 const handleLogin = async () => {
   loggingIn.value = true
   error.value = ''
+  
+  // 提交前再次验证
+  validateUsername()
+  validatePassword()
+  
+  if (!isFormValid.value) {
+    loggingIn.value = false
+    return
+  }
   
   try {
     const result = await login({ username: username.value, password: password.value })
@@ -149,6 +201,15 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
+}
+
+.app-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--accent-primary);
+  margin-bottom: 0.5rem;
 }
 
 .login-title {
@@ -221,6 +282,24 @@ onMounted(() => {
   background: var(--bg-hover);
 }
 
+/* 表单验证样式 */
+.form-input-error {
+  border-color: var(--error-color);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.form-input-error:focus {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-error {
+  font-size: 0.75rem;
+  color: var(--error-color);
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
 .form-actions {
   margin-top: 0.5rem;
 }
@@ -260,7 +339,7 @@ onMounted(() => {
   border-radius: var(--radius-lg);
   padding: 0.875rem 1rem;
   font-size: 0.875rem;
-  color: #fca5a5;
+  color: var(--error-color);
   margin-top: 0.5rem;
 }
 

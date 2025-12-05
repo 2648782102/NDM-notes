@@ -62,7 +62,7 @@
           <FontAwesomeIcon icon="list-ol" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('- [ ] ', '任务列表项')" title="任务列表">
-          <FontAwesomeIcon icon="list-check" size="sm" />
+          <FontAwesomeIcon icon="check-square" size="sm" />
         </button>
         <button class="toolbar-btn" @click="insertMarkdown('> ', '引用')" title="引用">
           <FontAwesomeIcon icon="quote-right" size="sm" />
