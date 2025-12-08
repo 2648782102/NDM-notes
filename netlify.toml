@@ -21,8 +21,6 @@
 [functions]
   # 函数目录
   directory = "./.netlify/functions"
-  # 函数超时时间
-  timeout = 10
 
 # 缓存规则
 [[headers]]
