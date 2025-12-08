@@ -40,10 +40,7 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# 边缘功能配置
-[edge_functions]
-  # 边缘函数目录
-  directory = "./netlify/edge-functions"
+
 
 # 部署前钩子
 [build.processing]
